@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Python Playground</title>
+  <style>
+    :root { color-scheme:dark; --activity:#181818; --sidebar:#252526; --editor:#1e1e1e; --editor-2:#181818; --border:#3a3a3a; --text:#d4d4d4; --muted:#858585; --blue:#3794ff; --green:#3fb950; --active-surface:#37373d; --hover-surface:#303236 }
+    body[data-theme="light"] { color-scheme:light; --activity:#e7e9ec; --sidebar:#f3f4f6; --editor:#fff; --editor-2:#f7f8fa; --border:#d1d5db; --text:#1f2937; --muted:#6b7280; --blue:#0969da; --active-surface:#dbeafe; --hover-surface:#e5e7eb }
+    body[data-theme="dracula"] { --activity:#282a36; --sidebar:#282a36; --editor:#282a36; --editor-2:#21222c; --border:#44475a; --text:#f8f8f2; --muted:#9a9aaa; --blue:#bd93f9; --green:#50fa7b; --active-surface:#44475a; --hover-surface:#3b3d52 }
+    body[data-theme="monokai"] { --activity:#272822; --sidebar:#272822; --editor:#272822; --editor-2:#1e1f1c; --border:#49483e; --text:#f8f8f2; --muted:#a6a69c; --blue:#66d9ef; --green:#a6e22e; --active-surface:#49483e; --hover-surface:#3e3d32 }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100vh; overflow:hidden; background:var(--editor); color:var(--text); font:13px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif }
+    button { border:0; color:inherit; cursor:pointer; font:inherit }
+    button:disabled { opacity:.55; cursor:wait }
+    .topbar { height:45px; display:flex; align-items:center; gap:18px; padding:0 14px; background:var(--editor-2); border-bottom:1px solid var(--border) }
+    .traffic { display:flex; gap:7px; margin-right:3px }.traffic i { width:11px; height:11px; border-radius:50%; display:block }.traffic i:nth-child(1){background:#ff5f57}.traffic i:nth-child(2){background:#febc2e}.traffic i:nth-child(3){background:#28c840}
+    .brand { display:flex; align-items:center; gap:9px; min-width:195px; color:var(--text) }.brand-mark { color:#22a7f0; font-size:18px; font-weight:700 }.brand strong { font-size:13px; font-weight:600 }.brand small { color:var(--muted); font-size:11px }
+    .breadcrumbs { color:var(--muted); font-size:12px; white-space:nowrap }.breadcrumbs b { color:var(--text); font-weight:500 }.top-actions { display:flex; align-items:center; gap:7px; margin-left:auto }
+    .top-actions button,.theme-button { height:28px; padding:0 10px; border:1px solid var(--border); border-radius:4px; background:var(--hover-surface); color:var(--text) }.top-actions button:hover,.theme-button:hover { background:var(--active-surface) }.top-actions .primary { background:#168b58; border-color:#21a366; color:#fff }.top-actions .primary:hover { background:#1aa365 }
+    .execution-options { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px }.execution-options select,.execution-options input { box-sizing:border-box; width:100%; min-width:0; height:32px; border:1px solid var(--border); border-radius:5px; background-color:var(--hover-surface); color:var(--text); padding:0 28px 0 9px; font:11px ui-monospace,monospace; outline:0 }.execution-options select { appearance:none; -webkit-appearance:none; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m3 4 3 3 3-3' fill='none' stroke='%23a7a7a7' stroke-width='1.4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center }.execution-options select option { background:var(--sidebar); color:var(--text) }.execution-options select:hover,.execution-options input:hover,.execution-options select:focus,.execution-options input:focus { border-color:var(--blue); box-shadow:0 0 0 1px color-mix(in srgb, var(--blue) 45%, transparent) }.execution-options label { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:11px; grid-column:1 / -1 }.execution-options input[type="checkbox"] { width:auto; height:auto; padding:0; accent-color:var(--blue) }.top-actions .tool-button { color:var(--muted) }#online-state { color:var(--green); font-size:11px }#online-state.offline { color:#f87171 }
+    .theme-picker,.settings-picker { position:relative }.theme-button,.settings-button { min-width:86px; text-align:left }.theme-button::after,.settings-button::after { content:''; display:inline-block; width:7px; height:7px; margin:0 0 3px 14px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg) }.theme-menu,.settings-menu { position:absolute; z-index:8; top:34px; right:0; min-width:140px; padding:8px; border:1px solid var(--border); border-radius:5px; background:var(--sidebar); box-shadow:0 12px 30px #0008; box-sizing:border-box }.theme-menu[hidden],.settings-menu[hidden] { display:none }.theme-menu button,.settings-menu button { display:flex; align-items:center; justify-content:space-between; width:100%; height:30px; padding:0 9px; border:0; text-align:left; background:transparent; color:var(--text); border-radius:3px }.theme-menu button::after { content:''; width:6px; height:10px; border-right:2px solid transparent; border-bottom:2px solid transparent; transform:rotate(45deg) translateY(-2px) }.theme-menu button:hover:not(.active),.settings-menu button:hover { background:var(--hover-surface) }.theme-menu button.active { background:var(--blue); color:#fff }.theme-menu button.active::after { border-color:#fff }.settings-menu { width:min(300px,calc(100vw - 20px)); max-height:calc(100vh - 70px); overflow:auto }.settings-menu > *,.settings-menu button,.settings-menu select,.settings-menu input { max-width:100%; box-sizing:border-box }.settings-section { padding:5px 0 9px; border-bottom:1px solid var(--border); margin-bottom:7px }.settings-section:last-child { border-bottom:0; margin-bottom:0; padding-bottom:0 }.settings-label { display:block; margin:0 4px 6px; color:var(--muted); font-size:10px; letter-spacing:.08em; text-transform:uppercase }.settings-tools { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:4px }.settings-tools button { justify-content:flex-start; border:1px solid var(--border); font-size:11px }.settings-preview { margin:8px 4px 0; padding:7px 8px; border:1px solid var(--border); border-radius:4px; color:var(--muted); font:10px/1.45 ui-monospace,monospace; background:var(--editor); overflow-wrap:anywhere }.settings-preview strong { color:var(--text); font-weight:500 }
+    main { display:grid; grid-template-columns:var(--explorer-width,245px) 6px minmax(0,1fr); height:calc(100vh - 45px); min-height:500px }
+    aside { overflow:auto; padding:16px 0; background:var(--sidebar); border-right:1px solid var(--border) }.explorer-title { display:flex; align-items:center; justify-content:space-between; padding:0 14px 10px; color:var(--muted); font-size:11px; letter-spacing:.08em }.explorer-title button { padding:2px 6px; color:var(--muted); background:transparent; font-size:17px; line-height:1 }.explorer-title button:hover { color:var(--text) }.file-search { width:calc(100% - 20px); height:28px; margin:0 10px 9px; padding:0 9px; border:1px solid var(--border); border-radius:4px; outline:0; background:var(--editor); color:var(--text); font:12px ui-monospace,monospace }.file-search:focus { border-color:var(--blue) }.folder { width:100%; padding:5px 14px; text-align:left; color:var(--text); background:transparent; font-size:12px; font-weight:600 }.folder:hover { background:var(--hover-surface) }.folder .arrow { display:inline-block; width:9px; height:9px; margin:0 8px 2px 2px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg); transition:transform .15s }.folder.collapsed .arrow { transform:rotate(-45deg); margin-bottom:-2px }.resizer { z-index:3; background:var(--editor-2); cursor:col-resize }.resizer:hover { background:var(--blue) }
+    #files { list-style:none; margin:0; padding:3px 0 } #files li { padding:0 8px } #files button { width:100%; height:29px; padding:0 9px; text-align:left; background:transparent; color:var(--text); border-radius:3px; font-size:12px }.file-icon { color:#ffd43b; margin-right:7px }.file-icon::before { content:'▱' }.files button:hover,#files button:hover { background:var(--hover-surface) } #files button.active { background:var(--active-surface); color:var(--text); box-shadow:inset 2px 0 var(--blue) }
+    .work { position:relative; display:grid; grid-template-rows:35px minmax(180px,1fr) 6px var(--output-height,210px); min-width:0; background:var(--editor); border-left:1px solid #111 }
+    .tabs { display:flex; align-items:stretch; overflow:auto; background:var(--editor-2); border-bottom:1px solid var(--border) }.tab { display:flex; align-items:center; gap:8px; min-width:150px; max-width:240px; padding:0 10px 0 14px; border-right:1px solid var(--border); color:var(--muted); background:var(--editor-2) }.tab.active { color:var(--text); border-top:1px solid var(--blue); background:var(--editor) }.tab .close { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-left:auto; padding:0; border:0; border-radius:3px; background:transparent; color:var(--muted); font-size:18px; line-height:1 }.tab .close:hover { background:var(--hover-surface); color:var(--text) }.tab .python { color:#ffd43b }.add-tab { flex:0 0 32px; margin:0 3px; background:transparent; color:var(--muted); font-size:18px }.add-tab:hover { color:var(--text); background:var(--hover-surface) }.panel-resizer { z-index:3; cursor:row-resize; background:var(--editor-2) }.panel-resizer:hover { background:var(--blue) }
+    .editor-panel { position:relative; min-height:0; overflow:hidden; background:var(--editor) }.editor-head { position:absolute; z-index:1; right:16px; top:9px; display:flex; gap:12px; align-items:center; pointer-events:none }.editor-head #filename { display:none } #status { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:11px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }.inline-spinner { width:12px; height:12px; border:2px solid #ffffff35; border-top-color:var(--blue); border-radius:50%; animation:spin .75s linear infinite }.inline-spinner[hidden] { display:none }
+    .line-numbers { position:absolute; inset:0 auto 0 0; z-index:2; width:48px; overflow:hidden; padding:18px 10px 18px 0; background:var(--editor-2); color:var(--muted); text-align:right; pointer-events:none; user-select:none; white-space:pre; font:14px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace }.editor-panel textarea { padding-left:60px }
+    textarea { width:100%; height:100%; resize:none; border:0; outline:0; padding:18px 24px; background:var(--editor); color:var(--text); caret-color:var(--text); font:14px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace; tab-size:4; white-space:pre }
+    #syntax-preview { position:absolute; inset:0; margin:0; height:100%; overflow:auto; padding:18px 24px 18px 60px; background:var(--editor); color:var(--text); font:14px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace; white-space:pre-wrap }.syntax-keyword{color:#c586c0}.syntax-string{color:#ce9178}.syntax-comment{color:#6a9955}.syntax-number{color:#b5cea8}.syntax-built-in{color:#4fc1ff}
+    .suggestions,.context-menu { position:absolute; z-index:8; overflow:auto; padding:5px; border:1px solid color-mix(in srgb, var(--border) 80%, white 20%); border-radius:7px; background:color-mix(in srgb, var(--sidebar) 82%, transparent); backdrop-filter:blur(16px) saturate(140%); -webkit-backdrop-filter:blur(16px) saturate(140%); box-shadow:0 16px 38px #0009; font:12px ui-monospace,monospace }.suggestions { top:42px; left:60px; width:220px; max-height:190px }.suggestions[hidden],.context-menu[hidden] { display:none }.suggestion { display:flex; justify-content:space-between; width:100%; padding:6px 8px; border-radius:3px; background:transparent; color:var(--text); text-align:left }.suggestion:hover,.suggestion.selected { background:var(--blue); color:#fff }.suggestion-type { color:var(--muted); font-size:10px }.suggestion:hover .suggestion-type,.suggestion.selected .suggestion-type { color:#fff }.context-menu { min-width:170px; padding:5px }.context-menu button { display:block; width:100%; padding:7px 9px; border-radius:4px; background:transparent; color:var(--text); text-align:left }.context-menu button:hover { background:var(--hover-surface) }.context-menu .danger { color:#f87171 }
+    .output-panel { position:relative; z-index:20; min-height:0; overflow:visible; border-top:1px solid var(--border); background:var(--editor-2) }.output-head { position:relative; z-index:21; height:36px; display:flex; align-items:center; gap:10px; padding:0 16px; border-bottom:1px solid var(--border); color:var(--muted); font-size:12px }.output-head strong { color:var(--text); font-weight:500 }.output-file-picker { position:relative; z-index:22; margin-left:4px }.output-file-button { max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:4px 8px; border:1px solid var(--border); border-radius:4px; background:var(--hover-surface); color:var(--text); font:11px ui-monospace,monospace }.output-file-button::after { content:''; display:inline-block; width:6px; height:6px; margin:0 0 2px 9px; border-right:1px solid currentColor; border-bottom:1px solid currentColor; transform:rotate(45deg) }.output-file-menu { position:absolute; bottom:30px; left:0; z-index:100; width:250px; max-height:260px; overflow:auto; padding:6px; border:1px solid var(--border); border-radius:7px; background:color-mix(in srgb, var(--sidebar) 84%, transparent); backdrop-filter:blur(16px) saturate(140%); -webkit-backdrop-filter:blur(16px) saturate(140%); box-shadow:0 16px 38px #0009 }.output-file-menu[hidden] { display:none }.output-file-search { width:100%; height:28px; margin-bottom:5px; padding:0 8px; border:1px solid var(--border); border-radius:4px; outline:0; background:var(--editor); color:var(--text); font:11px ui-monospace,monospace }.output-file-list button { display:flex; justify-content:space-between; width:100%; padding:7px 8px; border-radius:4px; background:transparent; color:var(--text); text-align:left; font:11px ui-monospace,monospace }.output-file-list button:hover { background:var(--hover-surface) }.output-file-list .run-file { color:var(--green); font-size:10px }.output-head > #clear { margin-left:auto; padding:3px 8px; border-radius:3px; background:var(--hover-surface); color:var(--muted); font-size:11px }.output-head > #clear:hover { color:var(--text); background:var(--active-surface) } pre { margin:0; height:174px; overflow:auto; padding:12px 17px; white-space:pre-wrap; color:var(--text); background:var(--editor-2); font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace }
+    .modal-backdrop { position:fixed; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; padding:20px; background:#0009 }.modal-backdrop[hidden] { display:none }.modal { width:min(480px,100%); padding:22px; border:1px solid color-mix(in srgb, var(--border) 80%, white 20%); border-radius:10px; background:color-mix(in srgb, var(--sidebar) 84%, transparent); backdrop-filter:blur(18px) saturate(140%); -webkit-backdrop-filter:blur(18px) saturate(140%); color:var(--text); box-shadow:0 20px 70px #000b }.modal h2 { margin:0 0 8px; color:var(--text); font-size:16px; font-weight:600 }.modal p { margin:0 0 16px; color:var(--muted); font-size:13px; white-space:pre-line }.modal input,.modal textarea { width:100%; margin-bottom:18px; padding:10px; border:1px solid var(--border); border-radius:4px; outline:0; background:var(--editor); color:var(--text); font:13px ui-monospace,monospace }.modal input { height:36px }.modal textarea { min-height:150px; resize:vertical; white-space:pre-wrap }.modal input:focus,.modal textarea:focus { border-color:var(--blue); box-shadow:0 0 0 1px var(--blue) }.modal-actions { display:flex; justify-content:flex-end; gap:8px }.modal-actions button { padding:8px 14px; border-radius:4px; background:var(--hover-surface); color:var(--text) }.modal-actions button.primary { background:#0e639c; color:#fff }.modal-actions button:hover { filter:brightness(1.15) }
+    .loading-layer { position:absolute; inset:0; z-index:4; display:flex; align-items:center; justify-content:center; background:#111b; backdrop-filter:blur(2px) }.loading-layer[hidden] { display:none }.loading-card { display:flex; align-items:center; gap:12px; min-width:220px; padding:14px 17px; border:1px solid #4b5563; border-radius:6px; background:#252526; color:#ddd; box-shadow:0 12px 35px #0008 }.spinner { width:18px; height:18px; flex:0 0 auto; border:2px solid #ffffff35; border-top-color:var(--blue); border-radius:50%; animation:spin .75s linear infinite }@keyframes spin { to { transform:rotate(360deg) } }.loading-card small { display:block; margin-top:2px; color:#999; font-size:11px }
+    @media (max-width:900px) { .brand { min-width:145px }.breadcrumbs { display:none } main { grid-template-columns:205px 6px minmax(0,1fr) } }
+    @media (max-width:650px) { body { overflow:auto }.topbar { height:auto; min-height:45px; flex-wrap:wrap; padding:8px 10px; gap:8px }.brand { min-width:0 }.top-actions { width:100%; margin-left:0 }.top-actions button,.theme-button { flex:1 } main { grid-template-columns:180px 6px minmax(0,1fr); height:calc(100vh - 101px) } aside { grid-column:1; grid-row:1 }.work { grid-column:3; grid-row:1; grid-template-rows:35px minmax(180px,1fr) 6px 180px } .tab { min-width:120px; padding:0 9px } textarea { padding:16px; font-size:12px } }
+    @media (max-width:460px) { main { grid-template-columns:1fr; height:auto; min-height:calc(100vh - 145px) } aside { max-height:150px; border-right:0; border-bottom:1px solid #383838 }.resizer { display:none }.work { grid-column:1; grid-row:2; min-height:620px }.status-left span:nth-child(n+2),.status-right span:nth-child(n+2) { display:none } }
+    .terminal-input { display:flex; gap:8px; padding:8px 12px; border-top:1px solid var(--border); background:var(--editor-2) }.terminal-input[hidden] { display:none }.terminal-input input { flex:1; min-width:0; height:30px; padding:0 9px; border:1px solid var(--border); border-radius:4px; background:var(--editor); color:var(--text); font:13px ui-monospace,monospace }.terminal-input button { padding:0 12px; border-radius:4px; background:var(--blue); color:#fff }
+    .modal { width:min(600px,100%); max-height:calc(100vh - 40px); overflow:auto }
+    .modal-actions { position:sticky; bottom:-22px; padding-top:12px; background:var(--sidebar) }
+    .changes-list { display:grid; gap:3px; max-height:180px; overflow:auto; margin-bottom:7px }.change-row { display:flex; align-items:center; gap:6px; min-height:28px; padding:3px 6px; border-radius:4px; color:var(--text); font:11px ui-monospace,monospace }.change-row:hover { background:var(--hover-surface) }.change-row input { width:auto; accent-color:var(--blue) }.change-path { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1 }.change-status { font-weight:700 }.change-added .change-status { color:#73c991 }.change-modified .change-status { color:#d19a66 }.change-deleted .change-status { color:#f07178 }.change-renamed .change-status { color:#dcbf7f }.change-remove { width:22px!important; height:22px!important; justify-content:center!important; padding:0!important; color:var(--muted)!important; font-size:15px!important }.source-control-button { justify-content:center!important; width:100%!important; border:1px solid var(--border)!important; color:var(--muted)!important; font-size:11px!important }
+    .github-token-row { display:flex; gap:5px }.github-token-row input { flex:1; min-width:0; height:30px; padding:0 8px; border:1px solid var(--border); border-radius:4px; background:var(--editor); color:var(--text); font:11px ui-monospace,monospace }.github-token-row button { width:auto!important; padding:0 9px!important; white-space:nowrap }.token-status { margin:6px 4px 0; color:var(--muted); font-size:10px }.token-status.ready { color:var(--green) }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">⌘</span><div><strong>Python Playground</strong><br><small>browser workspace</small></div></div>
+    <div class="breadcrumbs">Python <span>›</span> <b id="crumb-file">hello.py</b></div>
+    <div class="top-actions">
+      <span id="online-state" title="Checking API connection"><span aria-hidden="true">●</span> Checking...</span>
+      <div class="theme-picker"><button id="theme-button" class="theme-button" aria-haspopup="true" aria-expanded="false">Dark</button><div id="theme-menu" class="theme-menu" hidden><button data-theme="dark">Dark</button><button data-theme="light">Light</button><button data-theme="dracula">Dracula</button><button data-theme="monokai">Monokai</button></div></div>
+      <div class="settings-picker"><button id="settings-button" class="settings-button" aria-haspopup="true" aria-expanded="false">Settings</button><div id="settings-menu" class="settings-menu" hidden>
+        <div class="settings-section"><span class="settings-label">GitHub connection</span><div class="github-token-row"><input id="github-token" type="password" placeholder="GitHub token" autocomplete="off"><button id="save-token" class="source-control-button">Save token</button></div><div id="token-status" class="token-status">No browser token configured</div></div>
+        <div class="settings-section"><span class="settings-label">Execution</span><div class="execution-options" title="Execution settings">
+          <select id="test-framework" aria-label="Test framework"><option value="none">Run</option><option value="unittest">unittest</option><option value="pytest">pytest</option></select>
+          <select id="timeout" aria-label="Execution timeout"><option value="5">5s timeout</option><option value="10">10s timeout</option><option value="20">20s timeout</option><option value="30">30s timeout</option></select>
+          <select id="memory" aria-label="Memory limit"><option value="128">128 MB</option><option value="256">256 MB</option><option value="512">512 MB</option></select>
+          <input id="stdin" type="text" placeholder="stdin input" title="Standard input">
+          <input id="dependencies" type="text" placeholder="allowed packages" title="Comma-separated allowlisted dependencies">
+          <label><input id="network-disabled" type="checkbox" checked> No network</label>
+        </div><div id="settings-preview" class="settings-preview" aria-live="polite"></div></div>
+        <div class="settings-section"><span class="settings-label">Source control</span><div id="changes-list" class="changes-list"></div><button id="refresh-changes" class="source-control-button">↻ Refresh changes</button></div>
+        <div class="settings-section"><span class="settings-label">Editor tools</span><div class="settings-tools">
+          <button id="lint" class="tool-button">Lint</button><button id="format" class="tool-button">Format</button><button id="highlight" class="tool-button">Highlight</button><button id="find" class="tool-button">Find</button><button id="share" class="tool-button">Share</button><button id="copy-output" class="tool-button">Copy output</button><button id="admin-users" class="tool-button" hidden>Manage users</button>
+        </div></div>
+      </div></div>
+      <button id="download">Download</button>
+      <button id="save">Save as PR</button>
+      <button id="run" class="primary"><span aria-hidden="true">▶</span> Run Python</button>
+    </div>
+  </header>
+  <main>
+    <aside><div class="explorer-title"><span>EXPLORER</span><button id="new-file" title="New Python file">＋</button></div><input id="explorer-search" class="file-search" type="search" placeholder="Filter files..." autocomplete="off"><button id="folder-toggle" class="folder"><span class="arrow"></span> PYTHON</button><ul id="files"></ul></aside><div id="explorer-resizer" class="resizer" title="Resize Explorer"></div>
+    <section class="work">
+      <div id="tabs" class="tabs"><button id="add-tab" class="add-tab" title="New file">＋</button></div>
+      <div id="loading-layer" class="loading-layer" hidden><div class="loading-card"><span class="spinner"></span><div><strong id="loading-title">Working...</strong><small>Please wait while the request finishes.</small></div></div></div>
+      <div class="editor-panel">
+        <div class="editor-head"><span id="filename">hello.py</span><span id="status" title="Ready"><span id="status-spinner" class="inline-spinner" hidden></span><span id="status-text">Ready</span></span></div>
+        <div id="line-numbers" class="line-numbers">1</div>
+        <textarea id="editor" spellcheck="false" aria-label="Python code"></textarea>
+        <pre id="syntax-preview" hidden></pre>
+        <div id="suggestions" class="suggestions" role="listbox" hidden></div>
+      </div>
+      <div id="output-resizer" class="panel-resizer" title="Resize Output"></div>
+      <div class="output-panel">
+        <div class="output-head"><strong>Output</strong><div class="output-file-picker"><button id="output-file-button" class="output-file-button">No file</button><div id="output-file-menu" class="output-file-menu" hidden><input id="output-file-search" class="output-file-search" type="search" placeholder="Search and run files..." autocomplete="off"><div id="output-file-list" class="output-file-list"></div></div></div><button id="clear">Clear</button></div>
+        <pre id="output"></pre><div id="terminal-input" class="terminal-input" hidden><input id="terminal-input-value" type="text" placeholder="Program input"><button id="terminal-send">Send</button></div>
+      </div>
+    </section>
+  </main>
+  <div id="modal-backdrop" class="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h2 id="modal-title"></h2><p id="modal-message"></p>
+      <input id="modal-input" type="text" autocomplete="off" hidden><textarea id="modal-preview" readonly hidden></textarea>
+      <div class="modal-actions"><button id="modal-cancel">Cancel</button><button id="modal-confirm" class="primary">OK</button></div>
+    </section>
+  </div>
+  <div id="context-menu" class="context-menu" hidden>
+    <button data-action="run">Run File</button>
+    <button data-action="rename">Rename</button>
+    <button data-action="delete" class="danger">Delete</button>
+    <button data-action="close">Close Tab</button>
+  </div>
+  <script>
+    const API = ['localhost', '127.0.0.1'].includes(location.hostname)
+      ? location.origin
+      : 'https://python-playground-api.onrender.com';
+    const editor = document.querySelector('#editor');
+    const output = document.querySelector('#output');
+    const terminalInput = document.querySelector('#terminal-input');
+    const terminalInputValue = document.querySelector('#terminal-input-value');
+    const terminalSend = document.querySelector('#terminal-send');
+    const status = document.querySelector('#status');
+    const statusText = document.querySelector('#status-text');
+    const statusSpinner = document.querySelector('#status-spinner');
+    const filename = document.querySelector('#filename');
+    const modalBackdrop = document.querySelector('#modal-backdrop');
+    const modalTitle = document.querySelector('#modal-title');
+    const modalMessage = document.querySelector('#modal-message');
+    const modalInput = document.querySelector('#modal-input');
+    const modalPreview = document.querySelector('#modal-preview');
+    const modalCancel = document.querySelector('#modal-cancel');
+    const modalConfirm = document.querySelector('#modal-confirm');
+    const loadingLayer = document.querySelector('#loading-layer');
+    const loadingTitle = document.querySelector('#loading-title');
+    const busyButtons = [...document.querySelectorAll('#save, #download, #new-file')];
+    const tabs = document.querySelector('#tabs');
+    const runButton = document.querySelector('#run');
+    const suggestions = document.querySelector('#suggestions');
+    const lineNumbers = document.querySelector('#line-numbers');
+    const contextMenu = document.querySelector('#context-menu');
+    const explorerSearch = document.querySelector('#explorer-search');
+    const outputFileButton = document.querySelector('#output-file-button');
+    const outputFileMenu = document.querySelector('#output-file-menu');
+    const outputFileSearch = document.querySelector('#output-file-search');
+    const outputFileList = document.querySelector('#output-file-list');
+    const MAX_OPEN_FILES = 12;
+    const MAX_OUTPUT_SIZE = 100_000;
+    const REQUEST_TIMEOUT = 15_000;
+    const HIDDEN_FILES = new Set(['app.py']);
+    let repositoryFiles = [];
+    const openFiles = new Map();
+    let activeFile = '';
+    let busyCount = 0;
+    let suggestionIndex = 0;
+    const excludedChangePaths = new Set();
+    const pythonSuggestions = [
+      ['print', 'built-in'], ['def', 'keyword'], ['class', 'keyword'], ['if', 'keyword'], ['elif', 'keyword'], ['else', 'keyword'],
+      ['for', 'keyword'], ['while', 'keyword'], ['in', 'keyword'], ['import', 'keyword'], ['from', 'keyword'], ['as', 'keyword'],
+      ['return', 'keyword'], ['try', 'keyword'], ['except', 'keyword'], ['finally', 'keyword'], ['with', 'keyword'], ['yield', 'keyword'],
+      ['True', 'constant'], ['False', 'constant'], ['None', 'constant'], ['len', 'built-in'], ['range', 'built-in'], ['input', 'built-in'],
+      ['list', 'built-in'], ['dict', 'built-in'], ['str', 'built-in'], ['int', 'built-in'], ['float', 'built-in']
+    ];
+
+    function fileKey(name) { return name.trim().toLowerCase(); }
+    function fileExists(name, except = '') {
+      const key = fileKey(name);
+      return [...openFiles.values()].some(entry => !entry.deleted && entry.name !== except && fileKey(entry.name) === key);
+    }
+
+    async function checkRemoteFileName(name) {
+      beginBusy('Checking filename...');
+      setStatus('Checking filename', true);
+      try {
+        return await requestJson(`${API}/api/files/check?name=${encodeURIComponent(name)}`, {}, 'Filename check');
+      } finally {
+        endBusy();
+        const entry = openFiles.get(activeFile);
+        if (entry) setStatus(entry.status, entry.status === 'Running...');
+        else setStatus('Ready');
+      }
+    }
+
+    function setStatus(message, loading = false) {
+      status.title = message;
+      statusText.textContent = loading ? '' : message;
+      statusSpinner.hidden = !loading;
+    }
+
+    async function requestJson(url, options = {}, label = 'Request') {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+      const browserToken = sessionStorage.getItem('python-playground-github-token');
+      const headers = new Headers(options.headers || {});
+      if (browserToken) headers.set('X-GitHub-Token', browserToken);
+      try {
+        const response = await fetch(url, { ...options, headers, signal: controller.signal });
+        let result = {};
+        try { result = await response.json(); } catch (_) { result = {}; }
+        if (!response.ok) throw new Error(result.detail || `${label} failed (${response.status})`);
+        return result;
+      } catch (error) {
+        if (error.name === 'AbortError') throw new Error(`${label} timed out. Check the API and try again.`);
+        throw error;
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+
+    async function requestText(url, label = 'File load') {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+      try {
+        const response = await fetch(url, { signal: controller.signal });
+        if (!response.ok) throw new Error(`${label} failed (${response.status})`);
+        return await response.text();
+      } catch (error) {
+        if (error.name === 'AbortError') throw new Error(`${label} timed out. Try again.`);
+        throw error;
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+
+    function beginBusy(message) {
+      busyCount += 1;
+      loadingTitle.textContent = message;
+      loadingLayer.hidden = false;
+      busyButtons.forEach(button => { button.disabled = true; });
+    }
+
+    function endBusy() {
+      busyCount = Math.max(0, busyCount - 1);
+      if (busyCount === 0) {
+        loadingLayer.hidden = true;
+        busyButtons.forEach(button => { button.disabled = false; });
+      }
+    }
+
+    function openModal({ title, message = '', input = false, preview = false, value = '', confirmText = 'OK', cancelText = 'Cancel', showCancel = true }) {
+      return new Promise(resolve => {
+        let settled = false;
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        modalInput.hidden = !input;
+        modalInput.value = value;
+        modalPreview.hidden = !preview;
+        modalPreview.value = preview ? value : '';
+        modalCancel.hidden = !showCancel;
+        modalCancel.textContent = cancelText;
+        modalConfirm.textContent = confirmText;
+        const close = result => {
+          if (settled) return;
+          settled = true;
+          modalBackdrop.hidden = true;
+          modalCancel.onclick = null;
+          modalConfirm.onclick = null;
+          modalInput.onkeydown = null;
+          resolve(result);
+        };
+        modalCancel.onclick = () => close(null);
+        modalConfirm.onclick = () => close(input ? modalInput.value : true);
+        modalInput.onkeydown = event => {
+          if (event.key === 'Enter') { event.preventDefault(); event.stopPropagation(); close(modalInput.value); }
+          if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(null); }
+        };
+        modalBackdrop.hidden = false;
+        requestAnimationFrame(() => {
+          if (input) { modalInput.focus(); modalInput.select(); } else modalConfirm.focus();
+        });
+      });
+    }
+
+    function showNotice(title, message) {
+      return openModal({ title, message, confirmText: 'Close', cancelText: 'Close', showCancel: false });
+    }
+
+    function showPreview(title, content, confirmText = 'Close') {
+      return openModal({ title, preview: true, value: content, confirmText, cancelText: 'Close', showCancel: false });
+    }
+
+    async function ensureContributorId() {
+      const saved = localStorage.getItem('python-playground-contributor-id');
+      if (saved) return saved;
+      const existing = await openModal({ title: 'Contributor ID', message: 'Use an existing ID, or choose Create new to make one.\n\nFormat: #name@12345', input: true, value: '', confirmText: 'Use existing ID', cancelText: 'Create new', showCancel: true });
+      if (existing !== null) {
+        const id = existing.trim().toLowerCase();
+        if (!/^#[a-z0-9]+@[0-9]{5}$/.test(id)) return showNotice('Invalid contributor ID', 'Use this format: #name@12345').then(() => ensureContributorId());
+        try {
+          const account = await requestJson(`${API}/api/users/check/${encodeURIComponent(id)}`, {}, 'Contributor ID check');
+          if (!account.active) return showNotice('ID unavailable', 'This contributor ID is not registered or has been disabled.').then(() => ensureContributorId());
+        } catch (error) {
+          return showRetry('ID check failed', error.message, () => ensureContributorId());
+        }
+        localStorage.setItem('python-playground-contributor-id', id);
+        await showNotice('Contributor ID saved', `Your pull requests will use:\n\n${id}`);
+        return id;
+      }
+      const name = await openModal({ title: 'Create contributor ID', message: 'Enter your name.', input: true, value: '', confirmText: 'Next' });
+      if (!name || !name.trim()) return ensureContributorId();
+      const phone = await openModal({ title: 'Verify your number', message: 'Enter your phone number. Only the last five digits are used in your ID.', input: true, value: '', confirmText: 'Create ID' });
+      const digits = (phone || '').replace(/\D/g, '');
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 20);
+      if (!slug || digits.length < 5) return showNotice('Invalid details', 'Enter a valid name and a phone number with at least five digits.').then(() => ensureContributorId());
+      const id = `#${slug}@${digits.slice(-5)}`;
+      try {
+        await requestJson(`${API}/api/users/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, name: name.trim(), phone: digits }) }, 'Contributor registration');
+      } catch (error) {
+        return showRetry('Registration failed', error.message, () => ensureContributorId());
+      }
+      localStorage.setItem('python-playground-contributor-id', id);
+      await showNotice('Contributor ID created', `Your pull requests will use:\n\n${id}`);
+      return id;
+    }
+
+    async function manageUsers() {
+      const adminId = localStorage.getItem('python-playground-contributor-id');
+      const users = await requestJson(`${API}/api/admin/users?x_admin_id=${encodeURIComponent(adminId)}`, {}, 'User list');
+      const list = users.map(user => `${user.id}  ·  ${user.name}${user.active ? '' : ' (disabled)'}`).join('\n');
+      await showPreview('Registered users', list || 'No users registered.');
+      const targetInput = await openModal({ title: 'Manage user', message: 'Enter an ID to edit, or type delete #name@12345 to remove it.', input: true, confirmText: 'Continue' });
+      if (!targetInput) return;
+      const deleting = targetInput.trim().toLowerCase().startsWith('delete ');
+      const target = deleting ? targetInput.trim().slice(7).trim().toLowerCase() : targetInput.trim().toLowerCase();
+      const user = users.find(item => item.id === target);
+      if (!user) return showNotice('User not found', 'Enter an ID from the registered users list.');
+      if (deleting) {
+        if (user.id === adminId) return showNotice('Not allowed', 'The admin account cannot be deleted.');
+        await requestJson(`${API}/api/admin/users/${encodeURIComponent(user.id)}?x_admin_id=${encodeURIComponent(adminId)}`, { method: 'DELETE' }, 'User deletion');
+        return showNotice('User deleted', `${user.id} was removed.`);
+      }
+      const details = await openModal({ title: 'Edit user', message: 'Enter: new ID, new name', input: true, value: `${user.id}, ${user.name}`, confirmText: 'Save' });
+      if (!details) return;
+      const comma = details.indexOf(',');
+      if (comma < 1) return showNotice('Invalid details', 'Use: #name@12345, Full Name');
+      await requestJson(`${API}/api/admin/users/${encodeURIComponent(user.id)}?x_admin_id=${encodeURIComponent(adminId)}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: details.slice(0, comma).trim(), name: details.slice(comma + 1).trim() }) }, 'User update');
+      await showNotice('User updated', 'The contributor record was updated.');
+    }
+
+    async function showRetry(title, message, retry) {
+      const shouldRetry = await openModal({ title, message, confirmText: 'Retry', cancelText: 'Close' });
+      if (shouldRetry) return retry();
+    }
+
+    function fileState(file, loaded = false) {
+      if (!openFiles.has(file.name)) openFiles.set(file.name, { name: file.name, originalName: file.name, download_url: file.download_url || '', code: '', output: '', loaded, running: false, status: 'Ready', kind: loaded ? 'added' : 'unchanged', deleted: false });
+      return openFiles.get(file.name);
+    }
+
+    function renderTabs() {
+      tabs.querySelectorAll('.tab').forEach(tab => tab.remove());
+      const addButton = document.querySelector('#add-tab');
+      for (const entry of openFiles.values()) {
+        if (entry.deleted) continue;
+        const tab = document.createElement('div');
+        tab.className = `tab${entry.name === activeFile ? ' active' : ''}`;
+        tab.innerHTML = `<span class="python">${entry.running ? '◌' : '●'}</span><span>${entry.name}</span><button class="close" title="Close ${entry.name}">×</button>`;
+        tab.querySelector('span:nth-child(2)').onclick = () => openFile(entry);
+        tab.querySelector('.close').onclick = event => { event.stopPropagation(); closeFile(entry.name); };
+        tabs.insertBefore(tab, addButton);
+      }
+    }
+
+    async function renderOutputFiles(filter = '') {
+      const query = filter.trim();
+      let files;
+      try {
+        files = query ? await requestJson(`${API}/api/files?search=${encodeURIComponent(query)}`, {}, 'File search') : repositoryFiles;
+      } catch (error) {
+        outputFileList.innerHTML = `<div style="padding:8px;color:#f87171">${error.message}</div>`;
+        return;
+      }
+      outputFileList.innerHTML = '';
+      for (const file of files) {
+        const entry = fileState(file);
+        if (entry.deleted) continue;
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.innerHTML = `<span>${entry.name}</span><span class="run-file">Run ▶</span>`;
+        row.onclick = async () => { outputFileMenu.hidden = true; await openFile(entry); runCode(); };
+        outputFileList.appendChild(row);
+      }
+      if (!outputFileList.children.length) outputFileList.innerHTML = '<div style="padding:8px;color:var(--muted)">No matching files</div>';
+    }
+
+    function persistWorkspace() {
+      const entries = [...openFiles.values()].map(entry => ({
+        name: entry.name,
+        originalName: entry.originalName,
+        code: entry.code,
+        output: entry.output,
+        kind: entry.kind,
+        deleted: entry.deleted
+      }));
+      localStorage.setItem('python-playground-workspace', JSON.stringify({
+        entries,
+        activeFile
+      }));
+    }
+
+    function restoreWorkspace() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('python-playground-workspace') || 'null');
+        if (!saved || !Array.isArray(saved.entries)) return false;
+        openFiles.clear();
+        for (const item of saved.entries) {
+          const entry = fileState({ name: item.name }, true);
+          entry.originalName = item.originalName || item.name;
+          entry.code = item.code || '';
+          entry.output = item.output || '';
+          entry.loaded = true;
+          entry.kind = item.kind || 'unchanged';
+          entry.deleted = item.deleted || false;
+        }
+        activeFile = openFiles.has(saved.activeFile) ? saved.activeFile : [...openFiles.values()][0]?.name || '';
+        if (activeFile) syncActiveFile();
+        else clearActiveFile();
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function syncActiveFile() {
+      const entry = openFiles.get(activeFile);
+      if (!entry) return;
+      document.querySelectorAll('#files button').forEach(button => button.classList.toggle('active', button.dataset.name === entry.name));
+      filename.textContent = entry.name;
+      document.querySelector('#crumb-file').textContent = entry.name;
+      editor.value = entry.code;
+      output.textContent = entry.output;
+      setStatus(entry.status, entry.status === 'Running...');
+      updateLineNumbers();
+      outputFileButton.textContent = entry.name;
+      renderOutputFiles(outputFileSearch.value);
+      runButton.disabled = entry.running;
+      renderTabs();
+    }
+
+    function clearActiveFile() {
+      activeFile = '';
+      editor.value = '';
+      output.textContent = '';
+      filename.textContent = 'No file';
+      document.querySelector('#crumb-file').textContent = 'No file';
+      lineNumbers.textContent = '';
+      outputFileButton.textContent = 'No file';
+      runButton.disabled = true;
+      hideSuggestions();
+      document.querySelectorAll('#files button').forEach(button => button.classList.remove('active'));
+      setStatus('No file open');
+      renderTabs();
+      renderOutputFiles(outputFileSearch.value);
+    }
+
+    function closeFile(name) {
+      const names = [...openFiles.values()].filter(entry => !entry.deleted).map(entry => entry.name);
+      const index = names.indexOf(name);
+      openFiles.delete(name);
+      if (activeFile === name) {
+        activeFile = names[index - 1] || names[index + 1] || '';
+      }
+      if (activeFile && openFiles.has(activeFile)) syncActiveFile();
+      else clearActiveFile();
+      persistWorkspace();
+    }
+
+    function renderExplorerFiles(files) {
+      const list = document.querySelector('#files');
+      list.innerHTML = '';
+      for (const file of files) {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.textContent = file.name;
+        button.dataset.name = file.name;
+        const entry = fileState(file);
+        button.onclick = () => openFile(file).catch(error => { setStatus('Unable to load file'); showRetry('File load failed', error.message, () => openFile(file)); });
+        button.oncontextmenu = event => showContextMenu(event, entry.name);
+        li.appendChild(button);
+        list.appendChild(li);
+      }
+    }
+
+    let explorerSearchTimer;
+    function searchExplorerFiles() {
+      clearTimeout(explorerSearchTimer);
+      explorerSearchTimer = setTimeout(async () => {
+        try {
+          const query = explorerSearch.value.trim();
+          const files = await requestJson(`${API}/api/files?search=${encodeURIComponent(query)}`, {}, 'File search');
+          if (!query) repositoryFiles = files;
+          renderExplorerFiles(files);
+        } catch (error) {
+          await showRetry('File search failed', error.message, searchExplorerFiles);
+        }
+      }, 250);
+    }
+
+    function updateLineNumbers() {
+      const count = Math.max(1, editor.value.split('\n').length);
+      lineNumbers.textContent = Array.from({ length: count }, (_, index) => index + 1).join('\n');
+      lineNumbers.scrollTop = editor.scrollTop;
+    }
+
+    function addFileToExplorer(name) {
+      const list = document.querySelector('#files');
+      const li = document.createElement('li');
+      const button = document.createElement('button');
+      button.textContent = name;
+      button.dataset.name = name;
+      button.onclick = () => openFile(fileState({ name }, true));
+      button.oncontextmenu = event => showContextMenu(event, name);
+      li.appendChild(button);
+      list.appendChild(li);
+    }
+
+    let contextFile = '';
+    function showContextMenu(event, name) {
+      event.preventDefault();
+      contextFile = name;
+      contextMenu.hidden = false;
+      contextMenu.style.left = `${Math.min(event.clientX, window.innerWidth - 190)}px`;
+      contextMenu.style.top = `${Math.min(event.clientY, window.innerHeight - 170)}px`;
+    }
+
+    async function renameFile(name) {
+      const entry = openFiles.get(name);
+      if (!entry) return;
+      const next = await openModal({ title: 'Rename Python file', message: 'Use a filename ending in .py.', input: true, value: entry.name, confirmText: 'Rename' });
+      if (next === null || next.trim() === entry.name) return;
+      const newName = next.trim();
+      if (!/^[A-Za-z0-9_-]+\.py$/.test(newName)) return showNotice('Invalid filename', 'Use a simple Python filename ending in .py.');
+      let remoteName;
+      try {
+        remoteName = await checkRemoteFileName(newName);
+      } catch (error) {
+        await showRetry('Filename check failed', error.message, () => renameFile(name));
+        return;
+      }
+      if (!remoteName.allowed || remoteName.exists || fileExists(newName, entry.name) || HIDDEN_FILES.has(newName.toLowerCase())) return showNotice('File already exists', `${newName} is already in the workspace.`);
+      openFiles.delete(name);
+      entry.name = newName;
+      entry.kind = entry.originalName === newName ? entry.kind : 'renamed';
+      openFiles.set(newName, entry);
+      document.querySelectorAll('#files button').forEach(button => { if (button.dataset.name === name) { button.dataset.name = newName; button.textContent = newName; button.onclick = () => openFile(entry); button.oncontextmenu = event => showContextMenu(event, newName); } });
+      if (activeFile === name) activeFile = newName;
+      syncActiveFile();
+    }
+
+    async function deleteFile(name) {
+      const entry = openFiles.get(name);
+      if (!entry) return;
+      const confirmed = await openModal({ title: 'Delete Python file', message: `Delete ${name}? This will be included in the next pull request.`, confirmText: 'Delete' });
+      if (!confirmed) return;
+      if (entry.kind === 'added' && entry.originalName === entry.name) {
+        openFiles.delete(name);
+        document.querySelectorAll('#files button').forEach(button => { if (button.dataset.name === name) button.closest('li').remove(); });
+        if (activeFile === name) {
+          const next = [...openFiles.values()].find(item => !item.deleted);
+          activeFile = next ? next.name : '';
+          if (activeFile) syncActiveFile(); else { editor.value = ''; output.textContent = ''; outputFileButton.textContent = 'No file'; setStatus('No file open'); renderTabs(); renderOutputFiles(outputFileSearch.value); }
+        } else { renderTabs(); renderOutputFiles(outputFileSearch.value); }
+        return;
+      }
+      entry.deleted = true;
+      entry.kind = 'deleted';
+      document.querySelectorAll('#files button').forEach(button => { if (button.dataset.name === name) button.closest('li').remove(); });
+      if (activeFile === name) {
+        const next = [...openFiles.values()].find(item => !item.deleted);
+        activeFile = next ? next.name : '';
+        if (activeFile) syncActiveFile(); else { editor.value = ''; output.textContent = ''; outputFileButton.textContent = 'No file'; setStatus('No file open'); renderTabs(); renderOutputFiles(outputFileSearch.value); }
+      } else { renderTabs(); renderOutputFiles(outputFileSearch.value); }
+    }
+
+    contextMenu.querySelectorAll('button').forEach(button => button.onclick = async () => {
+      const action = button.dataset.action;
+      contextMenu.hidden = true;
+      if (action === 'run') { await openFile(openFiles.get(contextFile)); runCode(); }
+      if (action === 'rename') await renameFile(contextFile);
+      if (action === 'delete') await deleteFile(contextFile);
+      if (action === 'close') closeFile(contextFile);
+    });
+    document.addEventListener('click', event => { if (!event.target.closest('.context-menu')) contextMenu.hidden = true; });
+
+    async function createNewFile() {
+      const requested = await openModal({ title: 'New Python file', message: 'Choose a filename ending in .py.', input: true, value: 'new_file.py', confirmText: 'Create' });
+      if (requested === null) return;
+      const name = requested.trim();
+      if (!/^[A-Za-z0-9_-]+\.py$/.test(name)) {
+        await showNotice('Invalid filename', 'Use a simple Python filename ending in .py.');
+        return;
+      }
+      let remoteName;
+      try {
+        remoteName = await checkRemoteFileName(name);
+      } catch (error) {
+        await showRetry('Filename check failed', error.message, createNewFile);
+        return;
+      }
+      if (!remoteName.allowed || remoteName.exists || fileExists(name) || HIDDEN_FILES.has(name.toLowerCase())) {
+        await showNotice('File already exists', `${name} is already in the Explorer.`);
+        return;
+      }
+      if (openFiles.size >= MAX_OPEN_FILES) {
+        await showNotice('Workspace limit reached', `Close a tab before opening more than ${MAX_OPEN_FILES} files.`);
+        return;
+      }
+      const entry = fileState({ name }, true);
+      entry.code = '# Write your Python code here\n';
+      addFileToExplorer(name);
+      await openFile(entry);
+    }
+
+    async function restoreSharedCode() {
+      if (!location.hash.startsWith('#share=')) return false;
+      const token = decodeURIComponent(location.hash.slice(7));
+      try {
+        const payload = await requestJson(`${API}/api/share/${encodeURIComponent(token)}`, {}, 'Shared file');
+        if (!payload.name || typeof payload.code !== 'string' || !/^[A-Za-z0-9_-]+\.py$/.test(payload.name)) throw new Error('Invalid shared file');
+        const entry = fileState({ name: payload.name }, true);
+        entry.code = payload.code;
+        entry.loaded = true;
+        entry.status = 'Loaded from share link';
+        activeFile = entry.name;
+        syncActiveFile();
+        persistWorkspace();
+        return true;
+      } catch (_) {
+        await showNotice('Share link unavailable', 'This shared file is invalid or the API is offline.');
+        return false;
+      }
+    }
+
+    async function loadFiles() {
+      beginBusy('Loading repository files...');
+      setStatus('Loading repository files', true);
+      try {
+        if (location.hash.startsWith('#share=')) {
+          const restored = await restoreSharedCode();
+          repositoryFiles = restored ? [{ name: activeFile, type: 'file' }] : [];
+          renderExplorerFiles(repositoryFiles);
+          return;
+        }
+        const files = await requestJson(API + '/api/files', {}, 'Repository files');
+        repositoryFiles = files;
+        renderExplorerFiles(files);
+        if (!restoreWorkspace() && files.length) await openFile(files[0]);
+      } finally {
+        endBusy();
+      }
+    }
+
+    async function openFile(file) {
+      const entry = fileState(file);
+      activeFile = entry.name;
+      if (entry.loaded) { syncActiveFile(); return; }
+      beginBusy(`Loading ${entry.name}...`);
+      try {
+        entry.code = entry.download_url ? await requestText(entry.download_url, `${entry.name} load`) : entry.code;
+        entry.loaded = true;
+        entry.status = 'Ready';
+        syncActiveFile();
+      } finally {
+        endBusy();
+      }
+    }
+
+    function requestTerminalInput() {
+      terminalInput.hidden = false;
+      terminalInputValue.value = '';
+      terminalInputValue.focus();
+      return new Promise(resolve => {
+        const submit = () => {
+          terminalInput.hidden = true;
+          terminalSend.onclick = null;
+          terminalInputValue.onkeydown = null;
+          resolve(terminalInputValue.value);
+        };
+        terminalSend.onclick = submit;
+        terminalInputValue.onkeydown = event => { if (event.key === 'Enter') submit(); };
+      });
+    }
+
+    async function runCode() {
+      const entry = openFiles.get(activeFile);
+      if (!entry || entry.running) return;
+      const stdinField = document.querySelector('#stdin');
+      let runStdin = stdinField.value;
+      if (/\binput\s*\(/.test(entry.code)) {
+        output.textContent = '$ Program is waiting for input...';
+        const inputCount = Math.max(1, (entry.code.match(/\binput\s*\(/g) || []).length);
+        const values = [];
+        const prompts = [...entry.code.matchAll(/\binput\s*\(\s*(['"])(.*?)\1/g)].map(match => match[2]);
+        for (let index = 0; index < inputCount; index += 1) {
+          const promptText = prompts[index] || `Input ${index + 1} of ${inputCount}`;
+          output.textContent += `\n$ ${promptText}`;
+          const value = await openModal({ title: `Program input ${index + 1} of ${inputCount}`, message: promptText, input: true, value: '', confirmText: 'Submit input' });
+          if (value === null) return;
+          output.textContent += ` ${value}`;
+          values.push(value);
+        }
+        runStdin = `${values.join('\n')}\n`;
+        stdinField.value = runStdin;
+      }
+      entry.running = true;
+      entry.status = 'Running...';
+      syncActiveFile();
+      try {
+        const result = await requestJson(API + '/api/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code: entry.code,
+            stdin: runStdin,
+            timeout: Number(document.querySelector('#timeout').value),
+            memory_mb: Number(document.querySelector('#memory').value),
+            network_disabled: document.querySelector('#network-disabled').checked,
+            test_framework: document.querySelector('#test-framework').value,
+            dependencies: document.querySelector('#dependencies').value
+              .split(',')
+              .map(value => value.trim())
+              .filter(Boolean)
+          })
+        }, 'Python run');
+        entry.output = ((result.stdout || '') + (result.stderr || '')).slice(0, MAX_OUTPUT_SIZE);
+        entry.status = result.exit_code === 0 ? 'Completed successfully' : `Exited with code ${result.exit_code}`;
+      } catch (error) {
+        entry.output = error.message;
+        entry.status = 'Request failed';
+        await showRetry('Run failed', error.message, runCode);
+      } finally {
+        entry.running = false;
+        if (activeFile === entry.name) syncActiveFile();
+        else renderTabs();
+      }
+    }
+
+    function pendingChanges() {
+      const entries = location.hash.startsWith('#share=')
+        ? [...openFiles.values()].filter(entry => entry.name === activeFile)
+        : [...openFiles.values()];
+      return entries.flatMap(entry => {
+        if (excludedChangePaths.has(entry.name) || excludedChangePaths.has(entry.originalName)) return [];
+        if (entry.deleted) return [{ type: 'deleted', path: entry.originalName, content: '' }];
+        if (entry.originalName !== entry.name) return [{ type: 'renamed', path: entry.name, previous_path: entry.originalName, content: entry.code }];
+        if (entry.kind === 'added') return [{ type: 'added', path: entry.name, content: entry.code }];
+        if (entry.kind === 'modified') return [{ type: 'modified', path: entry.name, content: entry.code }];
+        return [];
+      });
+    }
+
+    function refreshChangesPanel() {
+      const list = document.querySelector('#changes-list');
+      const entries = [...openFiles.values()].filter(entry => !entry.deleted && (entry.kind !== 'unchanged' || entry.originalName !== entry.name));
+      list.innerHTML = entries.length ? entries.map(entry => {
+        const type = entry.originalName !== entry.name ? 'renamed' : entry.kind;
+        const label = type === 'renamed' ? `${entry.originalName} → ${entry.name}` : entry.name;
+        const checked = !excludedChangePaths.has(entry.name) && !excludedChangePaths.has(entry.originalName);
+        return `<div class="change-row change-${type}"><input type="checkbox" data-change-path="${entry.name}" ${checked ? 'checked' : ''}><span class="change-status">${type === 'added' ? 'A' : type === 'renamed' ? 'R' : 'M'}</span><span class="change-path" title="${label}">${label}</span><button class="change-remove" data-remove-path="${entry.name}" title="Exclude from PR">×</button></div>`;
+      }).join('') : '<div style="padding:6px;color:var(--muted);font-size:11px">No pending changes</div>';
+      list.querySelectorAll('[data-change-path]').forEach(input => input.onchange = () => {
+        if (input.checked) excludedChangePaths.delete(input.dataset.changePath);
+        else excludedChangePaths.add(input.dataset.changePath);
+      });
+      list.querySelectorAll('[data-remove-path]').forEach(button => button.onclick = () => {
+        excludedChangePaths.add(button.dataset.removePath);
+        refreshChangesPanel();
+      });
+    }
+
+    async function reviewChanges(changes) {
+      const labels = { added: 'A', modified: 'M', renamed: 'R', deleted: 'D' };
+      const summary = changes.map(change => `${labels[change.type]}  ${change.type === 'renamed' ? `${change.previous_path} → ${change.path}` : change.path}`).join('\n');
+      const previews = changes
+        .filter(change => change.type !== 'deleted')
+        .map(change => `--- ${change.path}\n+++ ${change.path}\n${(change.content || '').split('\n').slice(0, 40).map(line => `+ ${line}`).join('\n')}`)
+        .join('\n\n');
+      return openModal({ title: 'Review changes before PR', message: `${summary}\n\nUnified diff preview:\n${previews}`, confirmText: 'Create PR' });
+    }
+
+    async function savePullRequest() {
+      const entry = openFiles.get(activeFile);
+      const changes = pendingChanges();
+      if (!entry || !changes.length) { await showNotice('No changes', 'Edit, add, rename, or delete a Python file before creating a pull request.'); return; }
+      if (!await reviewChanges(changes)) return;
+      beginBusy('Creating pull request...');
+      setStatus('Creating pull request', true);
+      try {
+        const contributorId = await ensureContributorId();
+        const result = await requestJson(API + '/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: entry.name, content: entry.code, title: `Update ${entry.name}`, contributor_id: contributorId, changes })
+        }, 'Pull request');
+        entry.status = 'Pull request created';
+        setStatus(entry.status);
+        window.open(result.pull_request_url, '_blank', 'noopener');
+      } catch (error) {
+        entry.status = 'Save failed';
+        setStatus(entry.status);
+        await showRetry('Save failed', error.message, savePullRequest);
+      } finally {
+        endBusy();
+      }
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      }[character]));
+    }
+
+    function highlightPython(code) {
+      const keywords = new Set(['and','as','assert','break','class','continue','def','del','elif','else','except','False','finally','for','from','global','if','import','in','is','lambda','None','nonlocal','not','or','pass','raise','return','True','try','while','with','yield']);
+      const builtIns = new Set(['print','range','len','input','list','dict','set','tuple','str','int','float','bool','open','sum','enumerate','zip','min','max']);
+      const pattern = /("(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'|#[^\n]*|\b\d+(?:\.\d+)?\b|\b[A-Za-z_][A-Za-z0-9_]*\b)/g;
+      return code.split(pattern).map((part, index) => {
+        if (index % 2 === 0) return escapeHtml(part);
+        const escaped = escapeHtml(part);
+        if (part.startsWith('"') || part.startsWith("'")) return `<span class="syntax-string">${escaped}</span>`;
+        if (part.startsWith('#')) return `<span class="syntax-comment">${escaped}</span>`;
+        if (/^\d/.test(part)) return `<span class="syntax-number">${escaped}</span>`;
+        if (keywords.has(part)) return `<span class="syntax-keyword">${escaped}</span>`;
+        if (builtIns.has(part)) return `<span class="syntax-built-in">${escaped}</span>`;
+        return escaped;
+      }).join('');
+    }
+
+    document.querySelector('#highlight').onclick = () => {
+      const preview = document.querySelector('#syntax-preview');
+      preview.hidden = !preview.hidden;
+      editor.hidden = !preview.hidden;
+      if (!preview.hidden) {
+        preview.innerHTML = highlightPython(editor.value);
+        document.querySelector('#highlight').textContent = 'Edit';
+      } else {
+        document.querySelector('#highlight').textContent = 'Highlight';
+      }
+    };
+
+    document.querySelector('#lint').onclick = async () => {
+      const entry = openFiles.get(activeFile);
+      if (!entry) return showNotice('No file open', 'Open a Python file before linting.');
+      try {
+        const result = await requestJson(API + '/api/lint', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: entry.code })
+        }, 'Lint');
+        if (result.valid) await showPreview('Lint passed', `${entry.name}\n\nNo syntax errors found.`);
+        else await showNotice('Lint errors', result.errors.map(error => `Line ${error.line}, column ${error.column}: ${error.message}`).join('\n'));
+      } catch (error) {
+        await showRetry('Lint failed', error.message, () => document.querySelector('#lint').click());
+      }
+    };
+
+    document.querySelector('#format').onclick = async () => {
+      const entry = openFiles.get(activeFile);
+      if (!entry) return showNotice('No file open', 'Open a Python file before formatting.');
+      try {
+        const result = await requestJson(API + '/api/format', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: entry.code })
+        }, 'Format');
+        entry.code = result.code;
+        entry.kind = entry.kind === 'added' ? 'added' : 'modified';
+        syncActiveFile();
+        persistWorkspace();
+        await showPreview(`Formatted code · ${entry.name}`, entry.code);
+      } catch (error) {
+        await showRetry('Format failed', error.message, () => document.querySelector('#format').click());
+      }
+    };
+
+    document.querySelector('#find').onclick = async () => {
+      const query = await openModal({ title: 'Find in current file', message: 'Enter text to select the next match.', input: true, confirmText: 'Find' });
+      if (!query) return;
+      const start = editor.value.indexOf(query, editor.selectionEnd);
+      const found = start >= 0 ? start : editor.value.indexOf(query);
+      if (found < 0) return showNotice('Not found', `${query} was not found in this file.`);
+      editor.focus();
+      editor.setSelectionRange(found, found + query.length);
+      editor.scrollTop = Math.max(0, (editor.value.slice(0, found).split('\n').length - 5) * 23);
+    };
+
+    document.querySelector('#share').onclick = async () => {
+      const entry = openFiles.get(activeFile);
+      if (!entry) return showNotice('No file open', 'Open a file before sharing.');
+      try {
+        const result = await requestJson(`${API}/api/share`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: entry.name, code: entry.code })
+        }, 'Share link');
+        history.replaceState(null, '', `#share=${encodeURIComponent(result.token)}`);
+        await navigator.clipboard?.writeText(location.href);
+        await showPreview(`Share link · ${entry.name}`, location.href, 'Copy link');
+      } catch (error) {
+        await showRetry('Share failed', error.message, () => document.querySelector('#share').click());
+      }
+    };
+
+    document.querySelector('#copy-output').onclick = async () => {
+      const entry = openFiles.get(activeFile);
+      if (!entry?.output) return showNotice('No output', 'Run the current file before copying output.');
+      await navigator.clipboard.writeText(entry.output);
+      await showPreview(`Output · ${entry.name}`, entry.output, 'Copy output');
+    };
+
+    document.querySelector('#run').onclick = runCode;
+    document.querySelector('#save').onclick = savePullRequest;
+    document.querySelector('#new-file').onclick = createNewFile;
+    document.querySelector('#add-tab').onclick = createNewFile;
+    explorerSearch.oninput = searchExplorerFiles;
+    outputFileButton.onclick = () => { outputFileMenu.hidden = !outputFileMenu.hidden; if (!outputFileMenu.hidden) { renderOutputFiles(outputFileSearch.value); outputFileSearch.focus(); } };
+    outputFileSearch.oninput = () => renderOutputFiles(outputFileSearch.value);
+    document.addEventListener('click', event => { if (!event.target.closest('.output-file-picker')) outputFileMenu.hidden = true; });
+    document.querySelector('#folder-toggle').onclick = event => {
+      const folder = event.currentTarget;
+      const files = document.querySelector('#files');
+      const collapsed = files.hidden;
+      files.hidden = !collapsed;
+      folder.classList.toggle('collapsed', !collapsed);
+    };
+    const themeButton = document.querySelector('#theme-button');
+    const themeMenu = document.querySelector('#theme-menu');
+    function setTheme(theme) {
+      document.body.dataset.theme = theme;
+      themeButton.childNodes[0].textContent = theme[0].toUpperCase() + theme.slice(1);
+      themeMenu.querySelectorAll('button').forEach(button => button.classList.toggle('active', button.dataset.theme === theme));
+      localStorage.setItem('python-playground-theme', theme);
+    }
+    themeButton.onclick = () => { themeMenu.hidden = !themeMenu.hidden; themeButton.setAttribute('aria-expanded', String(!themeMenu.hidden)); };
+    themeMenu.querySelectorAll('button').forEach(button => button.onclick = () => { setTheme(button.dataset.theme); themeMenu.hidden = true; themeButton.setAttribute('aria-expanded', 'false'); });
+    const settingsButton = document.querySelector('#settings-button');
+    const settingsMenu = document.querySelector('#settings-menu');
+    settingsButton.onclick = () => { settingsMenu.hidden = !settingsMenu.hidden; settingsButton.setAttribute('aria-expanded', String(!settingsMenu.hidden)); if (!settingsMenu.hidden) refreshChangesPanel(); };
+    document.querySelector('#refresh-changes').onclick = refreshChangesPanel;
+    const githubTokenInput = document.querySelector('#github-token');
+    const tokenStatus = document.querySelector('#token-status');
+    function updateTokenStatus() {
+      const configured = Boolean(sessionStorage.getItem('python-playground-github-token'));
+      tokenStatus.textContent = configured ? 'Browser token saved for this session' : 'No browser token configured';
+      tokenStatus.classList.toggle('ready', configured);
+    }
+    document.querySelector('#save-token').onclick = async () => {
+      const token = githubTokenInput.value.trim();
+      if (!token) {
+        sessionStorage.removeItem('python-playground-github-token');
+        githubTokenInput.value = '';
+        updateTokenStatus();
+        await showNotice('Token cleared', 'The browser token was removed from this session.');
+        return;
+      }
+      sessionStorage.setItem('python-playground-github-token', token);
+      githubTokenInput.value = '';
+      updateTokenStatus();
+      await showNotice('Token saved', 'The token will be used for GitHub requests during this browser session.');
+    };
+    updateTokenStatus();
+    document.addEventListener('click', event => {
+      if (!event.target.closest('.theme-picker')) { themeMenu.hidden = true; themeButton.setAttribute('aria-expanded', 'false'); }
+      if (!event.target.closest('.settings-picker')) { settingsMenu.hidden = true; settingsButton.setAttribute('aria-expanded', 'false'); }
+    });
+    const savedTheme = localStorage.getItem('python-playground-theme') || 'dark';
+    setTheme(savedTheme);
+    document.querySelector('#clear').onclick = () => { const entry = openFiles.get(activeFile); if (entry) entry.output = ''; output.textContent = ''; };
+    document.querySelector('#download').onclick = () => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([openFiles.get(activeFile)?.code || ''], { type: 'text/x-python' }));
+      link.download = activeFile;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    };
+    function currentWord() {
+      const before = editor.value.slice(0, editor.selectionStart);
+      const match = before.match(/[A-Za-z_][A-Za-z0-9_]*$/);
+      return match ? { value: match[0], start: editor.selectionStart - match[0].length } : null;
+    }
+
+    function hideSuggestions() {
+      suggestions.hidden = true;
+      suggestionIndex = 0;
+    }
+
+    function acceptSuggestion(value) {
+      const word = currentWord();
+      if (!word) return hideSuggestions();
+      editor.setRangeText(value, word.start, editor.selectionStart, 'end');
+      hideSuggestions();
+      editor.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function updateSuggestions() {
+      const word = currentWord();
+      if (!word || word.value.length < 1) return hideSuggestions();
+      const matches = pythonSuggestions.filter(([value]) => value.toLowerCase().startsWith(word.value.toLowerCase())).slice(0, 8);
+      if (!matches.length) return hideSuggestions();
+      suggestions.innerHTML = '';
+      matches.forEach(([value, type], index) => {
+        const item = document.createElement('button');
+        item.className = `suggestion${index === suggestionIndex ? ' selected' : ''}`;
+        item.type = 'button';
+        item.innerHTML = `<span>${value}</span><span class="suggestion-type">${type}</span>`;
+        item.onclick = () => acceptSuggestion(value);
+        suggestions.appendChild(item);
+      });
+      suggestions.hidden = false;
+    }
+
+    function insertText(text, selectionOffset = text.length) {
+      const start = editor.selectionStart;
+      editor.setRangeText(text, start, editor.selectionEnd, 'end');
+      editor.selectionStart = editor.selectionEnd = start + selectionOffset;
+      editor.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    editor.addEventListener('keydown', event => {
+      const key = event.key;
+      if ((event.ctrlKey || event.metaKey) && key === 'Enter') { event.preventDefault(); event.stopPropagation(); runCode(); return; }
+      if (!suggestions.hidden && key === 'ArrowDown') { event.preventDefault(); event.stopPropagation(); suggestionIndex = Math.min(suggestionIndex + 1, suggestions.children.length - 1); updateSuggestions(); return; }
+      if (!suggestions.hidden && key === 'ArrowUp') { event.preventDefault(); event.stopPropagation(); suggestionIndex = Math.max(suggestionIndex - 1, 0); updateSuggestions(); return; }
+      if (!suggestions.hidden && (key === 'Enter' || key === 'Tab')) { event.preventDefault(); event.stopPropagation(); const item = suggestions.children[suggestionIndex]; if (item) acceptSuggestion(item.querySelector('span')?.textContent || item.textContent); return; }
+      if (!suggestions.hidden && key === 'Escape') { event.preventDefault(); event.stopPropagation(); hideSuggestions(); return; }
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        const lineStart = editor.value.lastIndexOf('\n', editor.selectionStart - 1) + 1;
+        if (event.shiftKey) {
+          const remove = Math.min(4, editor.selectionStart - lineStart, editor.value.slice(lineStart).match(/^ */)[0].length);
+          if (remove) editor.setRangeText('', editor.selectionStart - remove, editor.selectionStart, 'start');
+        } else insertText('    ');
+        return;
+      }
+      if (event.key === 'Backspace' && editor.selectionStart === editor.selectionEnd) {
+        const before = editor.value[editor.selectionStart - 1];
+        const after = editor.value[editor.selectionStart];
+        if ('([{'.includes(before) && ({ '(': ')', '[': ']', '{': '}' }[before] === after)) {
+          event.preventDefault(); editor.setRangeText('', editor.selectionStart - 1, editor.selectionStart + 1, 'start'); editor.dispatchEvent(new Event('input', { bubbles: true })); return;
+        }
+      }
+      const pairs = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'" };
+      if (pairs[event.key] && editor.selectionStart === editor.selectionEnd) {
+        event.preventDefault();
+        const next = editor.value[editor.selectionStart];
+        if ((event.key === next && '"\''.includes(event.key)) || (event.key === next && ')]}'.includes(event.key))) { editor.selectionStart = editor.selectionEnd += 1; return; }
+        insertText(event.key + pairs[event.key], 1);
+        return;
+      }
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const lineStart = editor.value.lastIndexOf('\n', editor.selectionStart - 1) + 1;
+        const line = editor.value.slice(lineStart, editor.selectionStart);
+        const indent = (line.match(/^\s*/) || [''])[0];
+        const dedent = /^(elif|else|except|finally)\b/.test(line.trim());
+        const nextIndent = ' '.repeat(Math.max(0, indent.length - (dedent ? 4 : 0) + (/:\s*$/.test(line) ? 4 : 0)));
+        insertText(`\n${nextIndent}`, nextIndent.length + 1);
+        hideSuggestions();
+        return;
+      }
+    });
+    editor.addEventListener('input', () => {
+      const entry = openFiles.get(activeFile);
+      if (entry) { entry.code = editor.value; if (entry.kind === 'unchanged') entry.kind = 'modified'; entry.status = 'Unsaved changes'; }
+      updateLineNumbers();
+      updateSuggestions();
+      persistWorkspace();
+    });
+    editor.addEventListener('scroll', () => { lineNumbers.scrollTop = editor.scrollTop; });
+    editor.addEventListener('blur', () => setTimeout(hideSuggestions, 120));
+
+    function makeResizable(handle, axis, update) {
+      handle.addEventListener('pointerdown', event => {
+        event.preventDefault();
+        handle.setPointerCapture(event.pointerId);
+        const start = axis === 'x' ? event.clientX : event.clientY;
+        const initial = axis === 'x' ? (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--explorer-width')) || 245) : (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--output-height')) || 210);
+        const onMove = move => update(initial, (axis === 'x' ? move.clientX : move.clientY) - start);
+        const onUp = () => { handle.releasePointerCapture(event.pointerId); handle.removeEventListener('pointermove', onMove); handle.removeEventListener('pointerup', onUp); };
+        handle.addEventListener('pointermove', onMove);
+        handle.addEventListener('pointerup', onUp);
+      });
+    }
+    makeResizable(document.querySelector('#explorer-resizer'), 'x', (initial, delta) => {
+      document.documentElement.style.setProperty('--explorer-width', `${Math.max(170, Math.min(430, initial + delta))}px`);
+    });
+    makeResizable(document.querySelector('#output-resizer'), 'y', (initial, delta) => {
+      document.documentElement.style.setProperty('--output-height', `${Math.max(120, Math.min(420, initial - delta))}px`);
+    });
+    async function updateOnlineState() {
+      const indicator = document.querySelector('#online-state');
+      if (!navigator.onLine) {
+        indicator.innerHTML = '<span aria-hidden="true">●</span> Offline';
+        indicator.title = 'Your browser reports no network connection';
+        indicator.classList.add('offline');
+        return;
+      }
+      indicator.innerHTML = '<span aria-hidden="true">●</span> Checking...';
+      indicator.title = 'Checking the Python Playground API';
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4000);
+        const response = await fetch(`${API}/api/health`, { cache: 'no-store', signal: controller.signal });
+        clearTimeout(timer);
+        if (!response.ok) throw new Error('API unavailable');
+        indicator.innerHTML = '<span aria-hidden="true">●</span> Online';
+        indicator.title = 'Python Playground API is reachable';
+        indicator.classList.remove('offline');
+      } catch (_) {
+        indicator.innerHTML = '<span aria-hidden="true">●</span> Offline';
+        indicator.title = 'The Python Playground API cannot be reached';
+        indicator.classList.add('offline');
+      }
+    }
+    function updateSettingsPreview() {
+      const framework = document.querySelector('#test-framework').value;
+      const timeout = document.querySelector('#timeout').value;
+      const memory = document.querySelector('#memory').value;
+      const network = document.querySelector('#network-disabled').checked ? 'blocked' : 'allowed';
+      document.querySelector('#settings-preview').innerHTML = `<strong>Preview:</strong> ${framework} · ${timeout}s · ${memory} MB · network ${network}`;
+    }
+    ['#test-framework', '#timeout', '#memory', '#network-disabled'].forEach(selector => document.querySelector(selector).addEventListener('change', updateSettingsPreview));
+    updateSettingsPreview();
+    window.addEventListener('online', updateOnlineState);
+    window.addEventListener('offline', updateOnlineState);
+    updateOnlineState();
+    setInterval(updateOnlineState, 30000);
+    ensureContributorId().then(id => {
+      if (id === '#pravin@89190') {
+        const adminButton = document.querySelector('#admin-users');
+        adminButton.hidden = false;
+        adminButton.onclick = () => manageUsers().catch(error => showNotice('User management failed', error.message));
+      }
+      return loadFiles();
+    }).catch(error => {
+      setStatus('Offline workspace');
+      restoreWorkspace();
+      if (!openFiles.size) showRetry('Could not load files', error.message, loadFiles);
+    });
+  </script>
+</body>
+</html>
