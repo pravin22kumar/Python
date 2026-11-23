@@ -6,7 +6,13 @@ import ast
 import base64
 import json
 import urllib.parse
+import hashlib
+import zlib
+import re
+import secrets
+import sqlite3
 
+from cryptography.fernet import Fernet, InvalidToken
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -40,6 +46,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/api/health")
+def health_check():
+    return {"status": "ok"}
 
 @app.get("/api/files")
 def list_repository_files(search: str = ""):
@@ -111,12 +120,187 @@ class SaveRequest(BaseModel):
     content: str
     title: str = "Update Python file"
     base: str = "main"
+    contributor_id: str = Field(pattern=r"^#[a-z0-9]+@[0-9]{5}$")
+    changes: list[dict] = Field(default_factory=list)
+
+class ShareRequest(BaseModel):
+    name: str
+    code: str
+
+
+def share_cipher():
+    secret = os.getenv("SHARE_SECRET", "local-python-playground-share-secret")
+    key = base64.urlsafe_b64encode(hashlib.sha256(secret.encode()).digest())
+    return Fernet(key)
+
+
+def valid_share_name(name: str):
+    return bool(re.fullmatch(r"[A-Za-z0-9_-]+\.py", name or "")) and name.lower() != "app.py"
+
+
+def share_db():
+    path = os.getenv("SHARE_DB", "shares.db")
+    connection = sqlite3.connect(path)
+    connection.execute("CREATE TABLE IF NOT EXISTS shares (id TEXT PRIMARY KEY, payload BLOB NOT NULL)")
+    connection.commit()
+    return connection
+
+
+ADMIN_CONTRIBUTOR_ID = "#pravin@89190"
+
+
+def users_db():
+    path = os.getenv("SHARE_DB", "shares.db")
+    connection = sqlite3.connect(path)
+    connection.execute("CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, name TEXT NOT NULL, phone_hash TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1)")
+    connection.execute("INSERT OR IGNORE INTO users (id, name, phone_hash) VALUES (?, ?, ?)", (ADMIN_CONTRIBUTOR_ID, "Pravin Kumar", hashlib.sha256(b"9150089190").hexdigest()))
+    connection.commit()
+    return connection
+
+
+class UserRequest(BaseModel):
+    id: str
+    name: str = ""
+    phone: str = ""
+
+
+class ChangePreviewRequest(BaseModel):
+    changes: list[dict] = Field(default_factory=list)
+
+
+@app.post("/api/source-control/preview")
+def source_control_preview(request: ChangePreviewRequest):
+    allowed = {"added": "A", "modified": "M", "renamed": "R", "deleted": "D"}
+    preview = []
+    for change in request.changes:
+        change_type = change.get("type", "modified")
+        if change_type not in allowed:
+            raise HTTPException(400, f"Unsupported change type: {change_type}")
+        path = change.get("path", "")
+        if not isinstance(path, str) or not path or ".." in path.split("/"):
+            raise HTTPException(400, "Invalid change path")
+        preview.append({"status": allowed[change_type], "type": change_type, "path": path})
+    return {"count": len(preview), "changes": preview}
+
+
+def valid_contributor_id(value: str):
+    return bool(re.fullmatch(r"#[a-z0-9]+@[0-9]{5}", value or ""))
+
+
+@app.post("/api/users/register")
+def register_user(request: UserRequest):
+    user_id = request.id.strip().lower()
+    if not valid_contributor_id(user_id):
+        raise HTTPException(400, "Contributor ID must look like #name@12345")
+    phone_digits = re.sub(r"\D", "", request.phone)
+    if not request.name.strip() or len(phone_digits) < 5:
+        raise HTTPException(400, "Name and a valid phone number are required")
+    connection = users_db()
+    try:
+        if connection.execute("SELECT 1 FROM users WHERE id = ?", (user_id,)).fetchone():
+            raise HTTPException(409, "Contributor ID is already registered")
+        phone_hash = hashlib.sha256(phone_digits.encode()).hexdigest()
+        if connection.execute("SELECT 1 FROM users WHERE phone_hash = ?", (phone_hash,)).fetchone():
+            raise HTTPException(409, "This phone number is already registered")
+        connection.execute("INSERT INTO users (id, name, phone_hash) VALUES (?, ?, ?)", (user_id, request.name.strip(), phone_hash))
+        connection.commit()
+    finally:
+        connection.close()
+    return {"id": user_id}
+
+
+@app.get("/api/users/check/{user_id}")
+def check_user(user_id: str):
+    connection = users_db()
+    try:
+        row = connection.execute("SELECT active FROM users WHERE id = ?", (user_id.lower(),)).fetchone()
+    finally:
+        connection.close()
+    return {"available": row is None, "active": bool(row and row[0])}
+
+
+@app.get("/api/admin/users")
+def list_users(x_admin_id: str = ""):
+    if x_admin_id.lower() != ADMIN_CONTRIBUTOR_ID:
+        raise HTTPException(403, "Admin access required")
+    connection = users_db()
+    try:
+        rows = connection.execute("SELECT id, name, active FROM users ORDER BY name").fetchall()
+    finally:
+        connection.close()
+    return [{"id": row[0], "name": row[1], "active": bool(row[2])} for row in rows]
+
+
+@app.delete("/api/admin/users/{user_id}")
+def delete_user(user_id: str, x_admin_id: str = ""):
+    if x_admin_id.lower() != ADMIN_CONTRIBUTOR_ID:
+        raise HTTPException(403, "Admin access required")
+    if user_id.lower() == ADMIN_CONTRIBUTOR_ID:
+        raise HTTPException(400, "The admin account cannot be deleted")
+    connection = users_db()
+    try:
+        connection.execute("DELETE FROM users WHERE id = ?", (user_id.lower(),))
+        connection.commit()
+    finally:
+        connection.close()
+    return {"deleted": user_id.lower()}
+
+
+@app.put("/api/admin/users/{user_id}")
+def edit_user(user_id: str, request: UserRequest, x_admin_id: str = ""):
+    if x_admin_id.lower() != ADMIN_CONTRIBUTOR_ID:
+        raise HTTPException(403, "Admin access required")
+    new_id = request.id.strip().lower()
+    if not valid_contributor_id(new_id) or not request.name.strip():
+        raise HTTPException(400, "Valid ID and name are required")
+    connection = users_db()
+    try:
+        connection.execute("UPDATE users SET id = ?, name = ? WHERE id = ?", (new_id, request.name.strip(), user_id.lower()))
+        connection.commit()
+    finally:
+        connection.close()
+    return {"id": new_id, "name": request.name.strip()}
+
+
+@app.post("/api/share")
+def create_share(request: ShareRequest):
+    if not valid_share_name(request.name):
+        raise HTTPException(400, "Only Python filenames are allowed")
+    if len(request.code) > 50_000:
+        raise HTTPException(400, "Code exceeds the 50 KB limit")
+    payload = json.dumps({"name": request.name, "code": request.code}, separators=(",", ":")).encode()
+    encrypted = share_cipher().encrypt(zlib.compress(payload, level=9))
+    connection = share_db()
+    try:
+        share_id = secrets.token_urlsafe(8)
+        connection.execute("INSERT INTO shares (id, payload) VALUES (?, ?)", (share_id, encrypted))
+        connection.commit()
+    finally:
+        connection.close()
+    return {"token": share_id}
+
+
+@app.get("/api/share/{token}")
+def read_share(token: str):
+    try:
+        connection = share_db()
+        row = connection.execute("SELECT payload FROM shares WHERE id = ?", (token,)).fetchone()
+        connection.close()
+        if not row:
+            raise InvalidToken
+        payload = zlib.decompress(share_cipher().decrypt(row[0]))
+        result = json.loads(payload)
+    except (InvalidToken, ValueError, zlib.error, UnicodeDecodeError, json.JSONDecodeError):
+        raise HTTPException(404, "Share link is invalid or expired")
+    if not valid_share_name(result.get("name", "")) or not isinstance(result.get("code"), str):
+        raise HTTPException(404, "Share link is invalid")
+    return result
     changes: list[dict] = Field(default_factory=list)
 
 
 @app.get("/")
 def index():
-    return FileResponse("static/index.html")
+    return FileResponse("static/index.html", headers={"Cache-Control": "no-store, max-age=0"})
 
 
 @app.post("/api/run")
@@ -279,6 +463,8 @@ def save_as_pull_request(request: SaveRequest):
             raise HTTPException(error.code, f"GitHub API error: {detail}")
         except urllib.error.URLError as error:
             raise HTTPException(502, f"GitHub API is unavailable: {error.reason}")
+        except (TimeoutError, OSError) as error:
+            raise HTTPException(502, f"GitHub connection failed: {error}")
 
     def github_optional_json(method, url, payload=None):
         data = json_bytes(payload)
@@ -301,6 +487,8 @@ def save_as_pull_request(request: SaveRequest):
 
     base_url = f"https://api.github.com/repos/{owner}/{repo}"
     base_branch = github_json("GET", f"{base_url}/branches/{urllib.parse.quote(request.base, safe='')}")
+    if not base_branch.get("commit", {}).get("sha"):
+        raise HTTPException(502, "GitHub returned no commit SHA for the selected base branch")
     branch = f"python-playground/{secrets.token_hex(6)}"
     github_json(
         "POST",
@@ -348,10 +536,10 @@ def save_as_pull_request(request: SaveRequest):
         "POST",
         f"{base_url}/pulls",
         {
-            "title": request.title,
+            "title": f"{request.contributor_id} {request.title}",
             "head": branch,
             "base": request.base,
-            "body": "Updated by the Python Playground UI.\n\nChanges:\n" + "\n".join(f"- {item}" for item in summary),
+            "body": f"Contributor: {request.contributor_id}\n\nUpdated by the Python Playground UI.\n\nChanges:\n" + "\n".join(f"- {item}" for item in summary),
         },
     )
     return {"pull_request_url": pull_request["html_url"], "branch": branch}

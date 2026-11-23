@@ -18,8 +18,8 @@
     .brand { display:flex; align-items:center; gap:9px; min-width:195px; color:var(--text) }.brand-mark { color:#22a7f0; font-size:18px; font-weight:700 }.brand strong { font-size:13px; font-weight:600 }.brand small { color:var(--muted); font-size:11px }
     .breadcrumbs { color:var(--muted); font-size:12px; white-space:nowrap }.breadcrumbs b { color:var(--text); font-weight:500 }.top-actions { display:flex; align-items:center; gap:7px; margin-left:auto }
     .top-actions button,.theme-button { height:28px; padding:0 10px; border:1px solid var(--border); border-radius:4px; background:var(--hover-surface); color:var(--text) }.top-actions button:hover,.theme-button:hover { background:var(--active-surface) }.top-actions .primary { background:#168b58; border-color:#21a366; color:#fff }.top-actions .primary:hover { background:#1aa365 }
-    .execution-options { display:flex; align-items:center; gap:5px }.execution-options select,.execution-options input { height:28px; border:1px solid var(--border); border-radius:4px; background:var(--hover-surface); color:var(--text); padding:0 6px }.execution-options label { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:11px }.execution-options input[type="checkbox"] { height:auto }.execution-options input[type="text"] { width:150px }.top-actions .tool-button { color:var(--muted) }#online-state { color:var(--green); font-size:11px }#online-state.offline { color:#f87171 }
-    .theme-picker { position:relative }.theme-button { min-width:86px; text-align:left }.theme-button::after { content:''; display:inline-block; width:7px; height:7px; margin:0 0 3px 14px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg) }.theme-menu { position:absolute; z-index:8; top:34px; right:0; min-width:140px; padding:5px; border:1px solid var(--border); border-radius:5px; background:var(--sidebar); box-shadow:0 12px 30px #0008 }.theme-menu[hidden] { display:none }.theme-menu button { display:flex; align-items:center; justify-content:space-between; width:100%; height:30px; padding:0 9px; border:0; text-align:left; background:transparent; color:var(--text); border-radius:3px }.theme-menu button::after { content:''; width:6px; height:10px; border-right:2px solid transparent; border-bottom:2px solid transparent; transform:rotate(45deg) translateY(-2px) }.theme-menu button:hover:not(.active) { background:var(--hover-surface) }.theme-menu button.active { background:var(--blue); color:#fff }.theme-menu button.active::after { border-color:#fff }
+    .execution-options { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px }.execution-options select,.execution-options input { box-sizing:border-box; width:100%; min-width:0; height:32px; border:1px solid var(--border); border-radius:5px; background-color:var(--hover-surface); color:var(--text); padding:0 28px 0 9px; font:11px ui-monospace,monospace; outline:0 }.execution-options select { appearance:none; -webkit-appearance:none; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m3 4 3 3 3-3' fill='none' stroke='%23a7a7a7' stroke-width='1.4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center }.execution-options select option { background:var(--sidebar); color:var(--text) }.execution-options select:hover,.execution-options input:hover,.execution-options select:focus,.execution-options input:focus { border-color:var(--blue); box-shadow:0 0 0 1px color-mix(in srgb, var(--blue) 45%, transparent) }.execution-options label { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:11px; grid-column:1 / -1 }.execution-options input[type="checkbox"] { width:auto; height:auto; padding:0; accent-color:var(--blue) }.top-actions .tool-button { color:var(--muted) }#online-state { color:var(--green); font-size:11px }#online-state.offline { color:#f87171 }
+    .theme-picker,.settings-picker { position:relative }.theme-button,.settings-button { min-width:86px; text-align:left }.theme-button::after,.settings-button::after { content:''; display:inline-block; width:7px; height:7px; margin:0 0 3px 14px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg) }.theme-menu,.settings-menu { position:absolute; z-index:8; top:34px; right:0; min-width:140px; padding:8px; border:1px solid var(--border); border-radius:5px; background:var(--sidebar); box-shadow:0 12px 30px #0008; box-sizing:border-box }.theme-menu[hidden],.settings-menu[hidden] { display:none }.theme-menu button,.settings-menu button { display:flex; align-items:center; justify-content:space-between; width:100%; height:30px; padding:0 9px; border:0; text-align:left; background:transparent; color:var(--text); border-radius:3px }.theme-menu button::after { content:''; width:6px; height:10px; border-right:2px solid transparent; border-bottom:2px solid transparent; transform:rotate(45deg) translateY(-2px) }.theme-menu button:hover:not(.active),.settings-menu button:hover { background:var(--hover-surface) }.theme-menu button.active { background:var(--blue); color:#fff }.theme-menu button.active::after { border-color:#fff }.settings-menu { width:min(300px,calc(100vw - 20px)); max-height:calc(100vh - 70px); overflow:auto }.settings-menu > *,.settings-menu button,.settings-menu select,.settings-menu input { max-width:100%; box-sizing:border-box }.settings-section { padding:5px 0 9px; border-bottom:1px solid var(--border); margin-bottom:7px }.settings-section:last-child { border-bottom:0; margin-bottom:0; padding-bottom:0 }.settings-label { display:block; margin:0 4px 6px; color:var(--muted); font-size:10px; letter-spacing:.08em; text-transform:uppercase }.settings-tools { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:4px }.settings-tools button { justify-content:flex-start; border:1px solid var(--border); font-size:11px }.settings-preview { margin:8px 4px 0; padding:7px 8px; border:1px solid var(--border); border-radius:4px; color:var(--muted); font:10px/1.45 ui-monospace,monospace; background:var(--editor); overflow-wrap:anywhere }.settings-preview strong { color:var(--text); font-weight:500 }
     main { display:grid; grid-template-columns:var(--explorer-width,245px) 6px minmax(0,1fr); height:calc(100vh - 45px); min-height:500px }
     aside { overflow:auto; padding:16px 0; background:var(--sidebar); border-right:1px solid var(--border) }.explorer-title { display:flex; align-items:center; justify-content:space-between; padding:0 14px 10px; color:var(--muted); font-size:11px; letter-spacing:.08em }.explorer-title button { padding:2px 6px; color:var(--muted); background:transparent; font-size:17px; line-height:1 }.explorer-title button:hover { color:var(--text) }.file-search { width:calc(100% - 20px); height:28px; margin:0 10px 9px; padding:0 9px; border:1px solid var(--border); border-radius:4px; outline:0; background:var(--editor); color:var(--text); font:12px ui-monospace,monospace }.file-search:focus { border-color:var(--blue) }.folder { width:100%; padding:5px 14px; text-align:left; color:var(--text); background:transparent; font-size:12px; font-weight:600 }.folder:hover { background:var(--hover-surface) }.folder .arrow { display:inline-block; width:9px; height:9px; margin:0 8px 2px 2px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg); transition:transform .15s }.folder.collapsed .arrow { transform:rotate(-45deg); margin-bottom:-2px }.resizer { z-index:3; background:var(--editor-2); cursor:col-resize }.resizer:hover { background:var(--blue) }
     #files { list-style:none; margin:0; padding:3px 0 } #files li { padding:0 8px } #files button { width:100%; height:29px; padding:0 9px; text-align:left; background:transparent; color:var(--text); border-radius:3px; font-size:12px }.file-icon { color:#ffd43b; margin-right:7px }.file-icon::before { content:'▱' }.files button:hover,#files button:hover { background:var(--hover-surface) } #files button.active { background:var(--active-surface); color:var(--text); box-shadow:inset 2px 0 var(--blue) }
@@ -31,11 +31,15 @@
     #syntax-preview { position:absolute; inset:0; margin:0; height:100%; overflow:auto; padding:18px 24px 18px 60px; background:var(--editor); color:var(--text); font:14px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace; white-space:pre-wrap }.syntax-keyword{color:#c586c0}.syntax-string{color:#ce9178}.syntax-comment{color:#6a9955}.syntax-number{color:#b5cea8}.syntax-built-in{color:#4fc1ff}
     .suggestions,.context-menu { position:absolute; z-index:8; overflow:auto; padding:5px; border:1px solid color-mix(in srgb, var(--border) 80%, white 20%); border-radius:7px; background:color-mix(in srgb, var(--sidebar) 82%, transparent); backdrop-filter:blur(16px) saturate(140%); -webkit-backdrop-filter:blur(16px) saturate(140%); box-shadow:0 16px 38px #0009; font:12px ui-monospace,monospace }.suggestions { top:42px; left:60px; width:220px; max-height:190px }.suggestions[hidden],.context-menu[hidden] { display:none }.suggestion { display:flex; justify-content:space-between; width:100%; padding:6px 8px; border-radius:3px; background:transparent; color:var(--text); text-align:left }.suggestion:hover,.suggestion.selected { background:var(--blue); color:#fff }.suggestion-type { color:var(--muted); font-size:10px }.suggestion:hover .suggestion-type,.suggestion.selected .suggestion-type { color:#fff }.context-menu { min-width:170px; padding:5px }.context-menu button { display:block; width:100%; padding:7px 9px; border-radius:4px; background:transparent; color:var(--text); text-align:left }.context-menu button:hover { background:var(--hover-surface) }.context-menu .danger { color:#f87171 }
     .output-panel { position:relative; z-index:20; min-height:0; overflow:visible; border-top:1px solid var(--border); background:var(--editor-2) }.output-head { position:relative; z-index:21; height:36px; display:flex; align-items:center; gap:10px; padding:0 16px; border-bottom:1px solid var(--border); color:var(--muted); font-size:12px }.output-head strong { color:var(--text); font-weight:500 }.output-file-picker { position:relative; z-index:22; margin-left:4px }.output-file-button { max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:4px 8px; border:1px solid var(--border); border-radius:4px; background:var(--hover-surface); color:var(--text); font:11px ui-monospace,monospace }.output-file-button::after { content:''; display:inline-block; width:6px; height:6px; margin:0 0 2px 9px; border-right:1px solid currentColor; border-bottom:1px solid currentColor; transform:rotate(45deg) }.output-file-menu { position:absolute; bottom:30px; left:0; z-index:100; width:250px; max-height:260px; overflow:auto; padding:6px; border:1px solid var(--border); border-radius:7px; background:color-mix(in srgb, var(--sidebar) 84%, transparent); backdrop-filter:blur(16px) saturate(140%); -webkit-backdrop-filter:blur(16px) saturate(140%); box-shadow:0 16px 38px #0009 }.output-file-menu[hidden] { display:none }.output-file-search { width:100%; height:28px; margin-bottom:5px; padding:0 8px; border:1px solid var(--border); border-radius:4px; outline:0; background:var(--editor); color:var(--text); font:11px ui-monospace,monospace }.output-file-list button { display:flex; justify-content:space-between; width:100%; padding:7px 8px; border-radius:4px; background:transparent; color:var(--text); text-align:left; font:11px ui-monospace,monospace }.output-file-list button:hover { background:var(--hover-surface) }.output-file-list .run-file { color:var(--green); font-size:10px }.output-head > #clear { margin-left:auto; padding:3px 8px; border-radius:3px; background:var(--hover-surface); color:var(--muted); font-size:11px }.output-head > #clear:hover { color:var(--text); background:var(--active-surface) } pre { margin:0; height:174px; overflow:auto; padding:12px 17px; white-space:pre-wrap; color:var(--text); background:var(--editor-2); font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace }
-    .modal-backdrop { position:fixed; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; padding:20px; background:#0009 }.modal-backdrop[hidden] { display:none }.modal { width:min(480px,100%); padding:22px; border:1px solid color-mix(in srgb, var(--border) 80%, white 20%); border-radius:10px; background:color-mix(in srgb, var(--sidebar) 84%, transparent); backdrop-filter:blur(18px) saturate(140%); -webkit-backdrop-filter:blur(18px) saturate(140%); color:var(--text); box-shadow:0 20px 70px #000b }.modal h2 { margin:0 0 8px; color:var(--text); font-size:16px; font-weight:600 }.modal p { margin:0 0 16px; color:var(--muted); font-size:13px; white-space:pre-line }.modal input { width:100%; height:36px; margin-bottom:18px; padding:0 10px; border:1px solid var(--border); border-radius:4px; outline:0; background:var(--editor); color:var(--text); font:13px ui-monospace,monospace }.modal input:focus { border-color:var(--blue); box-shadow:0 0 0 1px var(--blue) }.modal-actions { display:flex; justify-content:flex-end; gap:8px }.modal-actions button { padding:8px 14px; border-radius:4px; background:var(--hover-surface); color:var(--text) }.modal-actions button.primary { background:#0e639c; color:#fff }.modal-actions button:hover { filter:brightness(1.15) }
+    .modal-backdrop { position:fixed; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; padding:20px; background:#0009 }.modal-backdrop[hidden] { display:none }.modal { width:min(480px,100%); padding:22px; border:1px solid color-mix(in srgb, var(--border) 80%, white 20%); border-radius:10px; background:color-mix(in srgb, var(--sidebar) 84%, transparent); backdrop-filter:blur(18px) saturate(140%); -webkit-backdrop-filter:blur(18px) saturate(140%); color:var(--text); box-shadow:0 20px 70px #000b }.modal h2 { margin:0 0 8px; color:var(--text); font-size:16px; font-weight:600 }.modal p { margin:0 0 16px; color:var(--muted); font-size:13px; white-space:pre-line }.modal input,.modal textarea { width:100%; margin-bottom:18px; padding:10px; border:1px solid var(--border); border-radius:4px; outline:0; background:var(--editor); color:var(--text); font:13px ui-monospace,monospace }.modal input { height:36px }.modal textarea { min-height:150px; resize:vertical; white-space:pre-wrap }.modal input:focus,.modal textarea:focus { border-color:var(--blue); box-shadow:0 0 0 1px var(--blue) }.modal-actions { display:flex; justify-content:flex-end; gap:8px }.modal-actions button { padding:8px 14px; border-radius:4px; background:var(--hover-surface); color:var(--text) }.modal-actions button.primary { background:#0e639c; color:#fff }.modal-actions button:hover { filter:brightness(1.15) }
     .loading-layer { position:absolute; inset:0; z-index:4; display:flex; align-items:center; justify-content:center; background:#111b; backdrop-filter:blur(2px) }.loading-layer[hidden] { display:none }.loading-card { display:flex; align-items:center; gap:12px; min-width:220px; padding:14px 17px; border:1px solid #4b5563; border-radius:6px; background:#252526; color:#ddd; box-shadow:0 12px 35px #0008 }.spinner { width:18px; height:18px; flex:0 0 auto; border:2px solid #ffffff35; border-top-color:var(--blue); border-radius:50%; animation:spin .75s linear infinite }@keyframes spin { to { transform:rotate(360deg) } }.loading-card small { display:block; margin-top:2px; color:#999; font-size:11px }
     @media (max-width:900px) { .brand { min-width:145px }.breadcrumbs { display:none } main { grid-template-columns:205px 6px minmax(0,1fr) } }
     @media (max-width:650px) { body { overflow:auto }.topbar { height:auto; min-height:45px; flex-wrap:wrap; padding:8px 10px; gap:8px }.brand { min-width:0 }.top-actions { width:100%; margin-left:0 }.top-actions button,.theme-button { flex:1 } main { grid-template-columns:180px 6px minmax(0,1fr); height:calc(100vh - 101px) } aside { grid-column:1; grid-row:1 }.work { grid-column:3; grid-row:1; grid-template-rows:35px minmax(180px,1fr) 6px 180px } .tab { min-width:120px; padding:0 9px } textarea { padding:16px; font-size:12px } }
     @media (max-width:460px) { main { grid-template-columns:1fr; height:auto; min-height:calc(100vh - 145px) } aside { max-height:150px; border-right:0; border-bottom:1px solid #383838 }.resizer { display:none }.work { grid-column:1; grid-row:2; min-height:620px }.status-left span:nth-child(n+2),.status-right span:nth-child(n+2) { display:none } }
+    .terminal-input { display:flex; gap:8px; padding:8px 12px; border-top:1px solid var(--border); background:var(--editor-2) }.terminal-input[hidden] { display:none }.terminal-input input { flex:1; min-width:0; height:30px; padding:0 9px; border:1px solid var(--border); border-radius:4px; background:var(--editor); color:var(--text); font:13px ui-monospace,monospace }.terminal-input button { padding:0 12px; border-radius:4px; background:var(--blue); color:#fff }
+    .modal { width:min(600px,100%); max-height:calc(100vh - 40px); overflow:auto }
+    .modal-actions { position:sticky; bottom:-22px; padding-top:12px; background:var(--sidebar) }
+    .changes-list { display:grid; gap:3px; max-height:180px; overflow:auto; margin-bottom:7px }.change-row { display:flex; align-items:center; gap:6px; min-height:28px; padding:3px 6px; border-radius:4px; color:var(--text); font:11px ui-monospace,monospace }.change-row:hover { background:var(--hover-surface) }.change-row input { width:auto; accent-color:var(--blue) }.change-path { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1 }.change-status { font-weight:700 }.change-added .change-status { color:#73c991 }.change-modified .change-status { color:#d19a66 }.change-deleted .change-status { color:#f07178 }.change-renamed .change-status { color:#dcbf7f }.change-remove { width:22px!important; height:22px!important; justify-content:center!important; padding:0!important; color:var(--muted)!important; font-size:15px!important }.source-control-button { justify-content:center!important; width:100%!important; border:1px solid var(--border)!important; color:var(--muted)!important; font-size:11px!important }
   </style>
 </head>
 <body>
@@ -43,25 +47,25 @@
     <div class="brand"><span class="brand-mark">⌘</span><div><strong>Python Playground</strong><br><small>browser workspace</small></div></div>
     <div class="breadcrumbs">Python <span>›</span> <b id="crumb-file">hello.py</b></div>
     <div class="top-actions">
-      <span id="online-state">Online</span>
+      <span id="online-state" title="Checking API connection"><span aria-hidden="true">●</span> Checking...</span>
       <div class="theme-picker"><button id="theme-button" class="theme-button" aria-haspopup="true" aria-expanded="false">Dark</button><div id="theme-menu" class="theme-menu" hidden><button data-theme="dark">Dark</button><button data-theme="light">Light</button><button data-theme="dracula">Dracula</button><button data-theme="monokai">Monokai</button></div></div>
-      <div class="execution-options" title="Execution settings">
-        <select id="test-framework" aria-label="Test framework"><option value="none">Run</option><option value="unittest">unittest</option><option value="pytest">pytest</option></select>
-        <select id="timeout" aria-label="Execution timeout"><option value="5">5s</option><option value="10">10s</option><option value="20">20s</option><option value="30">30s</option></select>
-        <select id="memory" aria-label="Memory limit"><option value="128">128 MB</option><option value="256">256 MB</option><option value="512">512 MB</option></select>
-        <input id="stdin" type="text" placeholder="stdin input" title="Standard input">
-        <input id="dependencies" type="text" placeholder="allowed packages" title="Comma-separated allowlisted dependencies">
-        <label><input id="network-disabled" type="checkbox" checked> No network</label>
-      </div>
-      <button id="lint" class="tool-button">Lint</button>
-      <button id="format" class="tool-button">Format</button>
-      <button id="highlight" class="tool-button">Highlight</button>
-      <button id="find" class="tool-button">Find</button>
-      <button id="share" class="tool-button">Share</button>
-      <button id="copy-output" class="tool-button">Copy output</button>
+      <div class="settings-picker"><button id="settings-button" class="settings-button" aria-haspopup="true" aria-expanded="false">Settings</button><div id="settings-menu" class="settings-menu" hidden>
+        <div class="settings-section"><span class="settings-label">Execution</span><div class="execution-options" title="Execution settings">
+          <select id="test-framework" aria-label="Test framework"><option value="none">Run</option><option value="unittest">unittest</option><option value="pytest">pytest</option></select>
+          <select id="timeout" aria-label="Execution timeout"><option value="5">5s timeout</option><option value="10">10s timeout</option><option value="20">20s timeout</option><option value="30">30s timeout</option></select>
+          <select id="memory" aria-label="Memory limit"><option value="128">128 MB</option><option value="256">256 MB</option><option value="512">512 MB</option></select>
+          <input id="stdin" type="text" placeholder="stdin input" title="Standard input">
+          <input id="dependencies" type="text" placeholder="allowed packages" title="Comma-separated allowlisted dependencies">
+          <label><input id="network-disabled" type="checkbox" checked> No network</label>
+        </div><div id="settings-preview" class="settings-preview" aria-live="polite"></div></div>
+        <div class="settings-section"><span class="settings-label">Source control</span><div id="changes-list" class="changes-list"></div><button id="refresh-changes" class="source-control-button">↻ Refresh changes</button></div>
+        <div class="settings-section"><span class="settings-label">Editor tools</span><div class="settings-tools">
+          <button id="lint" class="tool-button">Lint</button><button id="format" class="tool-button">Format</button><button id="highlight" class="tool-button">Highlight</button><button id="find" class="tool-button">Find</button><button id="share" class="tool-button">Share</button><button id="copy-output" class="tool-button">Copy output</button><button id="admin-users" class="tool-button" hidden>Manage users</button>
+        </div></div>
+      </div></div>
       <button id="download">Download</button>
       <button id="save">Save as PR</button>
-      <button id="run" class="primary">Run Python</button>
+      <button id="run" class="primary"><span aria-hidden="true">▶</span> Run Python</button>
     </div>
   </header>
   <main>
@@ -79,14 +83,14 @@
       <div id="output-resizer" class="panel-resizer" title="Resize Output"></div>
       <div class="output-panel">
         <div class="output-head"><strong>Output</strong><div class="output-file-picker"><button id="output-file-button" class="output-file-button">No file</button><div id="output-file-menu" class="output-file-menu" hidden><input id="output-file-search" class="output-file-search" type="search" placeholder="Search and run files..." autocomplete="off"><div id="output-file-list" class="output-file-list"></div></div></div><button id="clear">Clear</button></div>
-        <pre id="output"></pre>
+        <pre id="output"></pre><div id="terminal-input" class="terminal-input" hidden><input id="terminal-input-value" type="text" placeholder="Program input"><button id="terminal-send">Send</button></div>
       </div>
     </section>
   </main>
   <div id="modal-backdrop" class="modal-backdrop" hidden>
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <h2 id="modal-title"></h2><p id="modal-message"></p>
-      <input id="modal-input" type="text" autocomplete="off" hidden>
+      <input id="modal-input" type="text" autocomplete="off" hidden><textarea id="modal-preview" readonly hidden></textarea>
       <div class="modal-actions"><button id="modal-cancel">Cancel</button><button id="modal-confirm" class="primary">OK</button></div>
     </section>
   </div>
@@ -102,6 +106,9 @@
       : 'https://python-playground-api.onrender.com';
     const editor = document.querySelector('#editor');
     const output = document.querySelector('#output');
+    const terminalInput = document.querySelector('#terminal-input');
+    const terminalInputValue = document.querySelector('#terminal-input-value');
+    const terminalSend = document.querySelector('#terminal-send');
     const status = document.querySelector('#status');
     const statusText = document.querySelector('#status-text');
     const statusSpinner = document.querySelector('#status-spinner');
@@ -110,6 +117,7 @@
     const modalTitle = document.querySelector('#modal-title');
     const modalMessage = document.querySelector('#modal-message');
     const modalInput = document.querySelector('#modal-input');
+    const modalPreview = document.querySelector('#modal-preview');
     const modalCancel = document.querySelector('#modal-cancel');
     const modalConfirm = document.querySelector('#modal-confirm');
     const loadingLayer = document.querySelector('#loading-layer');
@@ -134,6 +142,7 @@
     let activeFile = '';
     let busyCount = 0;
     let suggestionIndex = 0;
+    const excludedChangePaths = new Set();
     const pythonSuggestions = [
       ['print', 'built-in'], ['def', 'keyword'], ['class', 'keyword'], ['if', 'keyword'], ['elif', 'keyword'], ['else', 'keyword'],
       ['for', 'keyword'], ['while', 'keyword'], ['in', 'keyword'], ['import', 'keyword'], ['from', 'keyword'], ['as', 'keyword'],
@@ -214,13 +223,15 @@
       }
     }
 
-    function openModal({ title, message = '', input = false, value = '', confirmText = 'OK', cancelText = 'Cancel', showCancel = true }) {
+    function openModal({ title, message = '', input = false, preview = false, value = '', confirmText = 'OK', cancelText = 'Cancel', showCancel = true }) {
       return new Promise(resolve => {
         let settled = false;
         modalTitle.textContent = title;
         modalMessage.textContent = message;
         modalInput.hidden = !input;
         modalInput.value = value;
+        modalPreview.hidden = !preview;
+        modalPreview.value = preview ? value : '';
         modalCancel.hidden = !showCancel;
         modalCancel.textContent = cancelText;
         modalConfirm.textContent = confirmText;
@@ -248,6 +259,68 @@
 
     function showNotice(title, message) {
       return openModal({ title, message, confirmText: 'Close', cancelText: 'Close', showCancel: false });
+    }
+
+    function showPreview(title, content, confirmText = 'Close') {
+      return openModal({ title, preview: true, value: content, confirmText, cancelText: 'Close', showCancel: false });
+    }
+
+    async function ensureContributorId() {
+      const saved = localStorage.getItem('python-playground-contributor-id');
+      if (saved) return saved;
+      const existing = await openModal({ title: 'Contributor ID', message: 'Use an existing ID, or choose Create new to make one.\n\nFormat: #name@12345', input: true, value: '', confirmText: 'Use existing ID', cancelText: 'Create new', showCancel: true });
+      if (existing !== null) {
+        const id = existing.trim().toLowerCase();
+        if (!/^#[a-z0-9]+@[0-9]{5}$/.test(id)) return showNotice('Invalid contributor ID', 'Use this format: #name@12345').then(() => ensureContributorId());
+        try {
+          const account = await requestJson(`${API}/api/users/check/${encodeURIComponent(id)}`, {}, 'Contributor ID check');
+          if (!account.active) return showNotice('ID unavailable', 'This contributor ID is not registered or has been disabled.').then(() => ensureContributorId());
+        } catch (error) {
+          return showRetry('ID check failed', error.message, () => ensureContributorId());
+        }
+        localStorage.setItem('python-playground-contributor-id', id);
+        await showNotice('Contributor ID saved', `Your pull requests will use:\n\n${id}`);
+        return id;
+      }
+      const name = await openModal({ title: 'Create contributor ID', message: 'Enter your name.', input: true, value: '', confirmText: 'Next' });
+      if (!name || !name.trim()) return ensureContributorId();
+      const phone = await openModal({ title: 'Verify your number', message: 'Enter your phone number. Only the last five digits are used in your ID.', input: true, value: '', confirmText: 'Create ID' });
+      const digits = (phone || '').replace(/\D/g, '');
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 20);
+      if (!slug || digits.length < 5) return showNotice('Invalid details', 'Enter a valid name and a phone number with at least five digits.').then(() => ensureContributorId());
+      const id = `#${slug}@${digits.slice(-5)}`;
+      try {
+        await requestJson(`${API}/api/users/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, name: name.trim(), phone: digits }) }, 'Contributor registration');
+      } catch (error) {
+        return showRetry('Registration failed', error.message, () => ensureContributorId());
+      }
+      localStorage.setItem('python-playground-contributor-id', id);
+      await showNotice('Contributor ID created', `Your pull requests will use:\n\n${id}`);
+      return id;
+    }
+
+    async function manageUsers() {
+      const adminId = localStorage.getItem('python-playground-contributor-id');
+      const users = await requestJson(`${API}/api/admin/users?x_admin_id=${encodeURIComponent(adminId)}`, {}, 'User list');
+      const list = users.map(user => `${user.id}  ·  ${user.name}${user.active ? '' : ' (disabled)'}`).join('\n');
+      await showPreview('Registered users', list || 'No users registered.');
+      const targetInput = await openModal({ title: 'Manage user', message: 'Enter an ID to edit, or type delete #name@12345 to remove it.', input: true, confirmText: 'Continue' });
+      if (!targetInput) return;
+      const deleting = targetInput.trim().toLowerCase().startsWith('delete ');
+      const target = deleting ? targetInput.trim().slice(7).trim().toLowerCase() : targetInput.trim().toLowerCase();
+      const user = users.find(item => item.id === target);
+      if (!user) return showNotice('User not found', 'Enter an ID from the registered users list.');
+      if (deleting) {
+        if (user.id === adminId) return showNotice('Not allowed', 'The admin account cannot be deleted.');
+        await requestJson(`${API}/api/admin/users/${encodeURIComponent(user.id)}?x_admin_id=${encodeURIComponent(adminId)}`, { method: 'DELETE' }, 'User deletion');
+        return showNotice('User deleted', `${user.id} was removed.`);
+      }
+      const details = await openModal({ title: 'Edit user', message: 'Enter: new ID, new name', input: true, value: `${user.id}, ${user.name}`, confirmText: 'Save' });
+      if (!details) return;
+      const comma = details.indexOf(',');
+      if (comma < 1) return showNotice('Invalid details', 'Use: #name@12345, Full Name');
+      await requestJson(`${API}/api/admin/users/${encodeURIComponent(user.id)}?x_admin_id=${encodeURIComponent(adminId)}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: details.slice(0, comma).trim(), name: details.slice(comma + 1).trim() }) }, 'User update');
+      await showNotice('User updated', 'The contributor record was updated.');
     }
 
     async function showRetry(title, message, retry) {
@@ -524,23 +597,22 @@
       await openFile(entry);
     }
 
-    function restoreSharedCode() {
-      if (!location.hash.startsWith('#code=')) return false;
+    async function restoreSharedCode() {
+      if (!location.hash.startsWith('#share=')) return false;
+      const token = decodeURIComponent(location.hash.slice(7));
       try {
-        const encoded = decodeURIComponent(location.hash.slice(6));
-        const payload = JSON.parse(decodeURIComponent(escape(atob(encoded))));
-        if (!payload.name || typeof payload.code !== 'string') return false;
-        if (!/^[A-Za-z0-9_-]+\.py$/.test(payload.name)) return false;
+        const payload = await requestJson(`${API}/api/share/${encodeURIComponent(token)}`, {}, 'Shared file');
+        if (!payload.name || typeof payload.code !== 'string' || !/^[A-Za-z0-9_-]+\.py$/.test(payload.name)) throw new Error('Invalid shared file');
         const entry = fileState({ name: payload.name }, true);
         entry.code = payload.code;
         entry.loaded = true;
         entry.status = 'Loaded from share link';
         activeFile = entry.name;
         syncActiveFile();
-        addFileToExplorer(entry.name);
         persistWorkspace();
         return true;
       } catch (_) {
+        await showNotice('Share link unavailable', 'This shared file is invalid or the API is offline.');
         return false;
       }
     }
@@ -549,10 +621,16 @@
       beginBusy('Loading repository files...');
       setStatus('Loading repository files', true);
       try {
+        if (location.hash.startsWith('#share=')) {
+          const restored = await restoreSharedCode();
+          repositoryFiles = restored ? [{ name: activeFile, type: 'file' }] : [];
+          renderExplorerFiles(repositoryFiles);
+          return;
+        }
         const files = await requestJson(API + '/api/files', {}, 'Repository files');
         repositoryFiles = files;
         renderExplorerFiles(files);
-        if (!restoreSharedCode() && !restoreWorkspace() && files.length) await openFile(files[0]);
+        if (!restoreWorkspace() && files.length) await openFile(files[0]);
       } finally {
         endBusy();
       }
@@ -573,9 +651,43 @@
       }
     }
 
+    function requestTerminalInput() {
+      terminalInput.hidden = false;
+      terminalInputValue.value = '';
+      terminalInputValue.focus();
+      return new Promise(resolve => {
+        const submit = () => {
+          terminalInput.hidden = true;
+          terminalSend.onclick = null;
+          terminalInputValue.onkeydown = null;
+          resolve(terminalInputValue.value);
+        };
+        terminalSend.onclick = submit;
+        terminalInputValue.onkeydown = event => { if (event.key === 'Enter') submit(); };
+      });
+    }
+
     async function runCode() {
       const entry = openFiles.get(activeFile);
       if (!entry || entry.running) return;
+      const stdinField = document.querySelector('#stdin');
+      let runStdin = stdinField.value;
+      if (/\binput\s*\(/.test(entry.code)) {
+        output.textContent = '$ Program is waiting for input...';
+        const inputCount = Math.max(1, (entry.code.match(/\binput\s*\(/g) || []).length);
+        const values = [];
+        const prompts = [...entry.code.matchAll(/\binput\s*\(\s*(['"])(.*?)\1/g)].map(match => match[2]);
+        for (let index = 0; index < inputCount; index += 1) {
+          const promptText = prompts[index] || `Input ${index + 1} of ${inputCount}`;
+          output.textContent += `\n$ ${promptText}`;
+          const value = await openModal({ title: `Program input ${index + 1} of ${inputCount}`, message: promptText, input: true, value: '', confirmText: 'Submit input' });
+          if (value === null) return;
+          output.textContent += ` ${value}`;
+          values.push(value);
+        }
+        runStdin = `${values.join('\n')}\n`;
+        stdinField.value = runStdin;
+      }
       entry.running = true;
       entry.status = 'Running...';
       syncActiveFile();
@@ -585,7 +697,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             code: entry.code,
-            stdin: document.querySelector('#stdin').value,
+            stdin: runStdin,
             timeout: Number(document.querySelector('#timeout').value),
             memory_mb: Number(document.querySelector('#memory').value),
             network_disabled: document.querySelector('#network-disabled').checked,
@@ -610,12 +722,35 @@
     }
 
     function pendingChanges() {
-      return [...openFiles.values()].flatMap(entry => {
+      const entries = location.hash.startsWith('#share=')
+        ? [...openFiles.values()].filter(entry => entry.name === activeFile)
+        : [...openFiles.values()];
+      return entries.flatMap(entry => {
+        if (excludedChangePaths.has(entry.name) || excludedChangePaths.has(entry.originalName)) return [];
         if (entry.deleted) return [{ type: 'deleted', path: entry.originalName, content: '' }];
         if (entry.originalName !== entry.name) return [{ type: 'renamed', path: entry.name, previous_path: entry.originalName, content: entry.code }];
         if (entry.kind === 'added') return [{ type: 'added', path: entry.name, content: entry.code }];
         if (entry.kind === 'modified') return [{ type: 'modified', path: entry.name, content: entry.code }];
         return [];
+      });
+    }
+
+    function refreshChangesPanel() {
+      const list = document.querySelector('#changes-list');
+      const entries = [...openFiles.values()].filter(entry => !entry.deleted && (entry.kind !== 'unchanged' || entry.originalName !== entry.name));
+      list.innerHTML = entries.length ? entries.map(entry => {
+        const type = entry.originalName !== entry.name ? 'renamed' : entry.kind;
+        const label = type === 'renamed' ? `${entry.originalName} → ${entry.name}` : entry.name;
+        const checked = !excludedChangePaths.has(entry.name) && !excludedChangePaths.has(entry.originalName);
+        return `<div class="change-row change-${type}"><input type="checkbox" data-change-path="${entry.name}" ${checked ? 'checked' : ''}><span class="change-status">${type === 'added' ? 'A' : type === 'renamed' ? 'R' : 'M'}</span><span class="change-path" title="${label}">${label}</span><button class="change-remove" data-remove-path="${entry.name}" title="Exclude from PR">×</button></div>`;
+      }).join('') : '<div style="padding:6px;color:var(--muted);font-size:11px">No pending changes</div>';
+      list.querySelectorAll('[data-change-path]').forEach(input => input.onchange = () => {
+        if (input.checked) excludedChangePaths.delete(input.dataset.changePath);
+        else excludedChangePaths.add(input.dataset.changePath);
+      });
+      list.querySelectorAll('[data-remove-path]').forEach(button => button.onclick = () => {
+        excludedChangePaths.add(button.dataset.removePath);
+        refreshChangesPanel();
       });
     }
 
@@ -637,10 +772,11 @@
       beginBusy('Creating pull request...');
       setStatus('Creating pull request', true);
       try {
+        const contributorId = await ensureContributorId();
         const result = await requestJson(API + '/api/save', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ path: entry.name, content: entry.code, title: `Update ${entry.name}`, changes })
+          body: JSON.stringify({ path: entry.name, content: entry.code, title: `Update ${entry.name}`, contributor_id: contributorId, changes })
         }, 'Pull request');
         entry.status = 'Pull request created';
         setStatus(entry.status);
@@ -697,7 +833,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code: entry.code })
         }, 'Lint');
-        if (result.valid) await showNotice('Lint passed', 'No syntax errors found.');
+        if (result.valid) await showPreview('Lint passed', `${entry.name}\n\nNo syntax errors found.`);
         else await showNotice('Lint errors', result.errors.map(error => `Line ${error.line}, column ${error.column}: ${error.message}`).join('\n'));
       } catch (error) {
         await showRetry('Lint failed', error.message, () => document.querySelector('#lint').click());
@@ -717,7 +853,7 @@
         entry.kind = entry.kind === 'added' ? 'added' : 'modified';
         syncActiveFile();
         persistWorkspace();
-        await showNotice('Formatted', 'Python syntax formatting applied.');
+        await showPreview(`Formatted code · ${entry.name}`, entry.code);
       } catch (error) {
         await showRetry('Format failed', error.message, () => document.querySelector('#format').click());
       }
@@ -737,18 +873,25 @@
     document.querySelector('#share').onclick = async () => {
       const entry = openFiles.get(activeFile);
       if (!entry) return showNotice('No file open', 'Open a file before sharing.');
-      const payload = JSON.stringify({ name: entry.name, code: entry.code });
-      const encoded = btoa(unescape(encodeURIComponent(payload)));
-      history.replaceState(null, '', `#code=${encodeURIComponent(encoded)}`);
-      await navigator.clipboard?.writeText(location.href);
-      await showNotice('Share link created', 'The link is in the address bar and was copied to the clipboard when available.');
+      try {
+        const result = await requestJson(`${API}/api/share`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: entry.name, code: entry.code })
+        }, 'Share link');
+        history.replaceState(null, '', `#share=${encodeURIComponent(result.token)}`);
+        await navigator.clipboard?.writeText(location.href);
+        await showPreview(`Share link · ${entry.name}`, location.href, 'Copy link');
+      } catch (error) {
+        await showRetry('Share failed', error.message, () => document.querySelector('#share').click());
+      }
     };
 
     document.querySelector('#copy-output').onclick = async () => {
       const entry = openFiles.get(activeFile);
       if (!entry?.output) return showNotice('No output', 'Run the current file before copying output.');
       await navigator.clipboard.writeText(entry.output);
-      await showNotice('Output copied', 'The output was copied to the clipboard.');
+      await showPreview(`Output · ${entry.name}`, entry.output, 'Copy output');
     };
 
     document.querySelector('#run').onclick = runCode;
@@ -776,7 +919,14 @@
     }
     themeButton.onclick = () => { themeMenu.hidden = !themeMenu.hidden; themeButton.setAttribute('aria-expanded', String(!themeMenu.hidden)); };
     themeMenu.querySelectorAll('button').forEach(button => button.onclick = () => { setTheme(button.dataset.theme); themeMenu.hidden = true; themeButton.setAttribute('aria-expanded', 'false'); });
-    document.addEventListener('click', event => { if (!event.target.closest('.theme-picker')) { themeMenu.hidden = true; themeButton.setAttribute('aria-expanded', 'false'); } });
+    const settingsButton = document.querySelector('#settings-button');
+    const settingsMenu = document.querySelector('#settings-menu');
+    settingsButton.onclick = () => { settingsMenu.hidden = !settingsMenu.hidden; settingsButton.setAttribute('aria-expanded', String(!settingsMenu.hidden)); if (!settingsMenu.hidden) refreshChangesPanel(); };
+    document.querySelector('#refresh-changes').onclick = refreshChangesPanel;
+    document.addEventListener('click', event => {
+      if (!event.target.closest('.theme-picker')) { themeMenu.hidden = true; themeButton.setAttribute('aria-expanded', 'false'); }
+      if (!event.target.closest('.settings-picker')) { settingsMenu.hidden = true; settingsButton.setAttribute('aria-expanded', 'false'); }
+    });
     const savedTheme = localStorage.getItem('python-playground-theme') || 'dark';
     setTheme(savedTheme);
     document.querySelector('#clear').onclick = () => { const entry = openFiles.get(activeFile); if (entry) entry.output = ''; output.textContent = ''; };
@@ -901,15 +1051,52 @@
     makeResizable(document.querySelector('#output-resizer'), 'y', (initial, delta) => {
       document.documentElement.style.setProperty('--output-height', `${Math.max(120, Math.min(420, initial - delta))}px`);
     });
-    function updateOnlineState() {
+    async function updateOnlineState() {
       const indicator = document.querySelector('#online-state');
-      indicator.textContent = navigator.onLine ? 'Online' : 'Offline';
-      indicator.classList.toggle('offline', !navigator.onLine);
+      if (!navigator.onLine) {
+        indicator.innerHTML = '<span aria-hidden="true">●</span> Offline';
+        indicator.title = 'Your browser reports no network connection';
+        indicator.classList.add('offline');
+        return;
+      }
+      indicator.innerHTML = '<span aria-hidden="true">●</span> Checking...';
+      indicator.title = 'Checking the Python Playground API';
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4000);
+        const response = await fetch(`${API}/api/health`, { cache: 'no-store', signal: controller.signal });
+        clearTimeout(timer);
+        if (!response.ok) throw new Error('API unavailable');
+        indicator.innerHTML = '<span aria-hidden="true">●</span> Online';
+        indicator.title = 'Python Playground API is reachable';
+        indicator.classList.remove('offline');
+      } catch (_) {
+        indicator.innerHTML = '<span aria-hidden="true">●</span> Offline';
+        indicator.title = 'The Python Playground API cannot be reached';
+        indicator.classList.add('offline');
+      }
     }
+    function updateSettingsPreview() {
+      const framework = document.querySelector('#test-framework').value;
+      const timeout = document.querySelector('#timeout').value;
+      const memory = document.querySelector('#memory').value;
+      const network = document.querySelector('#network-disabled').checked ? 'blocked' : 'allowed';
+      document.querySelector('#settings-preview').innerHTML = `<strong>Preview:</strong> ${framework} · ${timeout}s · ${memory} MB · network ${network}`;
+    }
+    ['#test-framework', '#timeout', '#memory', '#network-disabled'].forEach(selector => document.querySelector(selector).addEventListener('change', updateSettingsPreview));
+    updateSettingsPreview();
     window.addEventListener('online', updateOnlineState);
     window.addEventListener('offline', updateOnlineState);
     updateOnlineState();
-    loadFiles().catch(error => {
+    setInterval(updateOnlineState, 30000);
+    ensureContributorId().then(id => {
+      if (id === '#pravin@89190') {
+        const adminButton = document.querySelector('#admin-users');
+        adminButton.hidden = false;
+        adminButton.onclick = () => manageUsers().catch(error => showNotice('User management failed', error.message));
+      }
+      return loadFiles();
+    }).catch(error => {
       setStatus('Offline workspace');
       restoreWorkspace();
       if (!openFiles.size) showRetry('Could not load files', error.message, loadFiles);
