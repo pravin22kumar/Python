@@ -40,6 +40,7 @@
     .modal { width:min(600px,100%); max-height:calc(100vh - 40px); overflow:auto }
     .modal-actions { position:sticky; bottom:-22px; padding-top:12px; background:var(--sidebar) }
     .changes-list { display:grid; gap:3px; max-height:180px; overflow:auto; margin-bottom:7px }.change-row { display:flex; align-items:center; gap:6px; min-height:28px; padding:3px 6px; border-radius:4px; color:var(--text); font:11px ui-monospace,monospace }.change-row:hover { background:var(--hover-surface) }.change-row input { width:auto; accent-color:var(--blue) }.change-path { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1 }.change-status { font-weight:700 }.change-added .change-status { color:#73c991 }.change-modified .change-status { color:#d19a66 }.change-deleted .change-status { color:#f07178 }.change-renamed .change-status { color:#dcbf7f }.change-remove { width:22px!important; height:22px!important; justify-content:center!important; padding:0!important; color:var(--muted)!important; font-size:15px!important }.source-control-button { justify-content:center!important; width:100%!important; border:1px solid var(--border)!important; color:var(--muted)!important; font-size:11px!important }
+    .github-token-row { display:flex; gap:5px }.github-token-row input { flex:1; min-width:0; height:30px; padding:0 8px; border:1px solid var(--border); border-radius:4px; background:var(--editor); color:var(--text); font:11px ui-monospace,monospace }.github-token-row button { width:auto!important; padding:0 9px!important; white-space:nowrap }.token-status { margin:6px 4px 0; color:var(--muted); font-size:10px }.token-status.ready { color:var(--green) }
   </style>
 </head>
 <body>
@@ -50,6 +51,7 @@
       <span id="online-state" title="Checking API connection"><span aria-hidden="true">●</span> Checking...</span>
       <div class="theme-picker"><button id="theme-button" class="theme-button" aria-haspopup="true" aria-expanded="false">Dark</button><div id="theme-menu" class="theme-menu" hidden><button data-theme="dark">Dark</button><button data-theme="light">Light</button><button data-theme="dracula">Dracula</button><button data-theme="monokai">Monokai</button></div></div>
       <div class="settings-picker"><button id="settings-button" class="settings-button" aria-haspopup="true" aria-expanded="false">Settings</button><div id="settings-menu" class="settings-menu" hidden>
+        <div class="settings-section"><span class="settings-label">GitHub connection</span><div class="github-token-row"><input id="github-token" type="password" placeholder="GitHub token" autocomplete="off"><button id="save-token" class="source-control-button">Save token</button></div><div id="token-status" class="token-status">No browser token configured</div></div>
         <div class="settings-section"><span class="settings-label">Execution</span><div class="execution-options" title="Execution settings">
           <select id="test-framework" aria-label="Test framework"><option value="none">Run</option><option value="unittest">unittest</option><option value="pytest">pytest</option></select>
           <select id="timeout" aria-label="Execution timeout"><option value="5">5s timeout</option><option value="10">10s timeout</option><option value="20">20s timeout</option><option value="30">30s timeout</option></select>
@@ -179,8 +181,11 @@
     async function requestJson(url, options = {}, label = 'Request') {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+      const browserToken = sessionStorage.getItem('python-playground-github-token');
+      const headers = new Headers(options.headers || {});
+      if (browserToken) headers.set('X-GitHub-Token', browserToken);
       try {
-        const response = await fetch(url, { ...options, signal: controller.signal });
+        const response = await fetch(url, { ...options, headers, signal: controller.signal });
         let result = {};
         try { result = await response.json(); } catch (_) { result = {}; }
         if (!response.ok) throw new Error(result.detail || `${label} failed (${response.status})`);
@@ -923,6 +928,28 @@
     const settingsMenu = document.querySelector('#settings-menu');
     settingsButton.onclick = () => { settingsMenu.hidden = !settingsMenu.hidden; settingsButton.setAttribute('aria-expanded', String(!settingsMenu.hidden)); if (!settingsMenu.hidden) refreshChangesPanel(); };
     document.querySelector('#refresh-changes').onclick = refreshChangesPanel;
+    const githubTokenInput = document.querySelector('#github-token');
+    const tokenStatus = document.querySelector('#token-status');
+    function updateTokenStatus() {
+      const configured = Boolean(sessionStorage.getItem('python-playground-github-token'));
+      tokenStatus.textContent = configured ? 'Browser token saved for this session' : 'No browser token configured';
+      tokenStatus.classList.toggle('ready', configured);
+    }
+    document.querySelector('#save-token').onclick = async () => {
+      const token = githubTokenInput.value.trim();
+      if (!token) {
+        sessionStorage.removeItem('python-playground-github-token');
+        githubTokenInput.value = '';
+        updateTokenStatus();
+        await showNotice('Token cleared', 'The browser token was removed from this session.');
+        return;
+      }
+      sessionStorage.setItem('python-playground-github-token', token);
+      githubTokenInput.value = '';
+      updateTokenStatus();
+      await showNotice('Token saved', 'The token will be used for GitHub requests during this browser session.');
+    };
+    updateTokenStatus();
     document.addEventListener('click', event => {
       if (!event.target.closest('.theme-picker')) { themeMenu.hidden = true; themeButton.setAttribute('aria-expanded', 'false'); }
       if (!event.target.closest('.settings-picker')) { settingsMenu.hidden = true; settingsButton.setAttribute('aria-expanded', 'false'); }

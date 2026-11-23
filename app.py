@@ -13,7 +13,7 @@ import secrets
 import sqlite3
 
 from cryptography.fernet import Fernet, InvalidToken
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
@@ -51,14 +51,14 @@ def health_check():
     return {"status": "ok"}
 
 @app.get("/api/files")
-def list_repository_files(search: str = ""):
+def list_repository_files(search: str = "", x_github_token: str | None = Header(default=None)):
     import json
     import urllib.error
     import urllib.request
 
     owner = os.getenv("GITHUB_OWNER", "pravin22kumar")
     repo = os.getenv("GITHUB_REPO", "Python")
-    token = os.getenv("GITHUB_TOKEN")
+    token = x_github_token or os.getenv("GITHUB_TOKEN")
     url = f"https://api.github.com/repos/{owner}/{repo}/contents"
     headers = {
         "Accept": "application/vnd.github+json",
@@ -71,12 +71,29 @@ def list_repository_files(search: str = ""):
         with urllib.request.urlopen(request, timeout=10) as response:
             items = json.loads(response.read())
     except urllib.error.HTTPError as error:
-        try:
-            detail = json.loads(error.read().decode("utf-8", "replace"))
-            message = detail.get("message", "Could not load repository files")
-        except (ValueError, UnicodeDecodeError):
-            message = "Could not load repository files"
-        raise HTTPException(error.code, f"GitHub repository files: {message}")
+        if error.code == 401 and token:
+            # Repository browsing can remain available for a public repository
+            # even when a deployment has an expired GitHub token. PR creation
+            # still requires a valid token in /api/save.
+            anonymous_headers = {
+                "Accept": "application/vnd.github+json",
+                "User-Agent": "python-playground",
+            }
+            try:
+                anonymous_request = urllib.request.Request(url, headers=anonymous_headers)
+                with urllib.request.urlopen(anonymous_request, timeout=10) as response:
+                    items = json.loads(response.read())
+            except urllib.error.HTTPError:
+                raise HTTPException(401, "GitHub token is invalid and the repository is not publicly readable")
+            except urllib.error.URLError as anonymous_error:
+                raise HTTPException(503, f"Repository file service is unavailable: {anonymous_error.reason}")
+        else:
+            try:
+                detail = json.loads(error.read().decode("utf-8", "replace"))
+                message = detail.get("message", "Could not load repository files")
+            except (ValueError, UnicodeDecodeError):
+                message = "Could not load repository files"
+            raise HTTPException(error.code, f"GitHub repository files: {message}")
     except urllib.error.URLError as error:
         raise HTTPException(503, f"Repository file service is unavailable: {error.reason}")
 
@@ -96,9 +113,9 @@ def list_repository_files(search: str = ""):
 
 
 @app.get("/api/files/check")
-def check_file_name(name: str):
+def check_file_name(name: str, x_github_token: str | None = Header(default=None)):
     normalized = name.strip().lower()
-    files = list_repository_files()
+    files = list_repository_files(x_github_token=x_github_token)
     return {
         "exists": any(item["name"].lower() == normalized for item in files),
         "allowed": normalized.endswith(".py") and normalized != "app.py",
@@ -424,8 +441,8 @@ def format_code(request: RunRequest):
 
 
 @app.post("/api/save")
-def save_as_pull_request(request: SaveRequest):
-    token = os.getenv("GITHUB_TOKEN")
+def save_as_pull_request(request: SaveRequest, x_github_token: str | None = Header(default=None)):
+    token = x_github_token or os.getenv("GITHUB_TOKEN")
     if not token:
         raise HTTPException(503, "GITHUB_TOKEN is not configured")
 
